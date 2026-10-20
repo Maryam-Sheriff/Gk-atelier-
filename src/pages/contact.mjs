@@ -47,7 +47,7 @@ export function contactPage(ctx) {
       </div>
       <div class="contact-info__block">
         <h2 class="contact-info__title">${t('contact.expectations_title')}</h2>
-        <ul class="stitch-list">
+        <ul class="fine-list">
           ${t('contact.expectations').map((item) => html`<li>${item}</li>`)}
         </ul>
       </div>
@@ -65,7 +65,7 @@ export function contactPage(ctx) {
   </div>
 </section>
 
-<section class="section section--beige" aria-labelledby="contact-steps">
+<section class="section section--stone" aria-labelledby="contact-steps">
   <div class="container">
     ${sectionHeading({ title: t('contact.steps_title'), id: 'contact-steps', align: 'center' })}
     ${steps(ctx)}

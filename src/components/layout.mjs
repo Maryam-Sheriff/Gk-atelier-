@@ -81,12 +81,10 @@ ${(page.jsonLd ?? []).map(jsonLd)}
 
 function brandMark(ctx, { className = 'brand' } = {}) {
   const { brand, t } = ctx;
-  if (brand.mark) {
+  const logo = brand.wordmark ?? brand.mark;
+  if (logo) {
     return html`<a class="${className}" href="${ctx.url('/')}">
-      ${brand.wordmark
-        ? html`<img class="brand__wordmark" src="${brand.wordmark.url}" width="${brand.wordmark.width}" height="${brand.wordmark.height}" alt="${t('meta.site_name')}">`
-        : ''}
-      <img class="brand__logo" src="${brand.mark.url}" width="${brand.mark.width}" height="${brand.mark.height}" alt="${t('meta.site_name')}">
+      <img class="${brand.wordmark ? 'brand__wordmark' : 'brand__logo'}" src="${logo.url}" width="${logo.width}" height="${logo.height}" alt="${t('meta.site_name')}">
     </a>`;
   }
   // Until the supplied logo file is added, show the name as plain text rather
@@ -122,12 +120,6 @@ function header(ctx, page) {
   const active = page.navKey && items.some((i) => i.key === page.navKey) ? page.navKey : page.section;
   const current = (item) => (item.key === active ? 'page' : null);
   return html`<header class="site-header" data-header>
-  <div class="topbar">
-    <div class="container topbar__inner">
-      <p class="topbar__note">${t('nav.topbar')}</p>
-      ${phoneLink(ctx, 'topbar__phone')}
-    </div>
-  </div>
   <div class="container masthead">
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-label-open="${t('nav.menu')}" data-label-close="${t('nav.close_menu')}">
       ${icon('menu')}<span class="nav-toggle__label">${t('nav.menu')}</span>
@@ -135,7 +127,7 @@ function header(ctx, page) {
     ${brandMark(ctx, { className: 'brand masthead__brand' })}
     <div class="site-header__actions">
       ${languageSwitch(ctx, page)}
-      ${whatsappButton(ctx, generalMessage, { label: 'WhatsApp', variant: 'secondary', size: 'small', className: 'header-wa' })}
+      ${whatsappButton(ctx, generalMessage, { label: 'WhatsApp', variant: 'link', className: 'header-wa' })}
     </div>
   </div>
   <nav class="site-nav" id="site-nav" aria-label="${t('nav.label')}">
@@ -175,15 +167,13 @@ function footer(ctx, page, floating = '') {
   const year = new Date().getFullYear();
   const social = Object.entries(settings.social);
   return html`<footer class="site-footer">
-  <div class="site-footer__trim" aria-hidden="true"></div>
+  <div class="container site-footer__brand">
+    ${brand.lockup
+      ? html`<a class="brand-lockup" href="${ctx.url('/')}">${picture(ctx, brand.lockup, { sizes: '200px', alt: t('meta.site_name') })}</a>`
+      : brandMark(ctx, { className: 'brand brand--footer' })}
+    <p class="site-footer__tagline">${t('footer.tagline')}</p>
+  </div>
   <div class="container site-footer__grid">
-    <div class="site-footer__brand">
-      ${brand.lockup
-        ? html`<a class="brand-lockup" href="${ctx.url('/')}">${picture(ctx, brand.lockup, { sizes: '220px', alt: t('meta.site_name') })}</a>`
-        : brandMark(ctx, { className: 'brand brand--footer' })}
-      <p class="site-footer__tagline">${t('footer.tagline')}</p>
-      <p class="site-footer__service">${t('footer.service')}</p>
-    </div>
     <nav class="site-footer__nav" aria-labelledby="footer-collections">
       <h2 class="site-footer__heading" id="footer-collections">${t('nav.all_collections')}</h2>
       <ul>
@@ -201,7 +191,7 @@ function footer(ctx, page, floating = '') {
     <div class="site-footer__connect">
       <h2 class="site-footer__heading">${t('footer.connect')}</h2>
       <p class="site-footer__text">${t('footer.connect_text')}</p>
-      ${whatsappButton(ctx, t('whatsapp.messages.general'), { label: t('whatsapp.order'), variant: 'light' })}
+      ${whatsappButton(ctx, t('whatsapp.messages.general'), { label: t('whatsapp.order'), variant: 'secondary' })}
       ${phoneLink(ctx, 'site-footer__phone')}
       ${social.length
         ? html`<ul class="social-links">
@@ -214,19 +204,11 @@ function footer(ctx, page, floating = '') {
     </div>
   </div>
   <div class="container site-footer__bottom">
-    <p>${t('footer.note')}</p>
+    <p>${t('footer.service')} · ${t('footer.note')}</p>
     <p><span>${t('footer.copyright', { year })}</span> · <a href="${ctx.url('/privacy/')}">${t('footer.privacy')}</a></p>
   </div>
   ${floating}
 </footer>`;
-}
-
-function previewBar(ctx) {
-  if (!ctx.blockers.length) return '';
-  const items = ctx.blockers.map((b) => ctx.t(`preview.items.${b.key}`)).join(ctx.lang === 'ar' ? '، ' : ', ');
-  return html`<div class="preview-bar" role="note">
-  <div class="container"><strong>${ctx.t('preview.label')}</strong> ${ctx.t('preview.text', { items })}</div>
-</div>`;
 }
 
 function setupDialog(ctx) {
@@ -256,7 +238,6 @@ ${html`<html lang="${lang}" dir="${LANGS[lang].dir}" class="no-js">
 ${head(ctx, page)}
 <body class="page-${page.name}${page.floatingWhatsApp !== false ? ' has-float' : ''}">
 <a class="skip-link" href="#main">${t('nav.skip')}</a>
-${previewBar(ctx)}
 ${header(ctx, page)}
 <main id="main" tabindex="-1">
 ${page.body}

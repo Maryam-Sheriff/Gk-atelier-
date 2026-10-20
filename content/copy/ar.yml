@@ -24,7 +24,6 @@ nav:
   about: عن غادة
   contact: تواصلوا معنا
   all_collections: المجموعات
-  topbar: صُنعت يدويًا في مصر · نخدم عملاءنا في مصر والخليج
   menu: القائمة
   close_menu: إغلاق القائمة
   switch_label: English
@@ -522,13 +521,3 @@ footer:
   connect_text: للقطع والمشاريع الخاصة والطلبات الاحترافية.
   privacy: الخصوصية
   copyright: "© {year} GK Atelier — غادة خليل"
-
-preview:
-  label: نسخة تجريبية
-  text: "لم يُنشر بعد. ما زال مطلوبًا: {items}."
-  items:
-    whatsapp: إضافة رقم واتساب
-    url: إضافة عنوان الموقع
-    logo: إضافة الشعار
-    arabic: مراجعة النصوص العربية
-    samples: استبدال المنتجات النموذجية

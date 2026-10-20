@@ -30,11 +30,14 @@ brand:
   # The GK Atelier logo exactly as supplied (transparent PNG or SVG).
   logo: images/brand/gk-atelier-logo.png
   # Smaller versions cut from the same logo, never redrawn or stretched:
-  #   logo_monogram         the GK monogram, used in the header
+  #   logo_monogram         the GK monogram, used in the menu and favicons
   #   logo_without_tagline  monogram + name, used on the homepage and footer
   #                         (the tagline is already written right next to it)
+  #   logo_wordmark         just the name lines, "GK ATELIER / BY GHADA
+  #                         KHALIL", used across the top of every page
   logo_monogram: images/brand/gk-atelier-monogram.png
   logo_without_tagline: images/brand/gk-atelier-logo-without-tagline.png
+  logo_wordmark: images/brand/gk-atelier-wordmark.png
   # Square GK monogram for browser tabs and phone home screens.
   icon: images/brand/gk-atelier-icon.png
   # 1200 × 630 image shown when a page is shared on WhatsApp, Instagram,

@@ -1,10 +1,7 @@
 import { html } from '../lib/html.mjs';
 import { pick } from '../lib/i18n.mjs';
-import { craftIcon } from '../components/icons.mjs';
 import { picture } from '../components/media.mjs';
 import { breadcrumbs, button, sectionHeading, text, whatsappButton, whatsappNote } from '../components/ui.mjs';
-
-const EXPERTISE_ICONS = ['easel', 'dressform', 'needle', 'team'];
 
 export function aboutPage(ctx) {
   const { t, content } = ctx;
@@ -62,19 +59,18 @@ export function aboutPage(ctx) {
   </div>
 </section>
 
-<section class="section section--linen" aria-labelledby="highlights-title">
+<section class="section section--stone" aria-labelledby="highlights-title">
   <div class="container">
     ${sectionHeading({ eyebrow: t('home.expertise_eyebrow'), title: t('about.highlights_title'), id: 'highlights-title', align: 'center' })}
-    <ul class="expertise__list">
+    <ol class="expertise__list">
       ${t('home.expertise').map(
-        (item, i) => html`<li class="expertise__item">
-          <span class="expertise__icon">${craftIcon(EXPERTISE_ICONS[i % EXPERTISE_ICONS.length])}</span>
+        (item) => html`<li class="expertise__item">
           <p class="expertise__kicker">${item.kicker}</p>
           <h3 class="expertise__title">${item.title}</h3>
           <p class="expertise__text">${item.text}</p>
         </li>`,
       )}
-    </ul>
+    </ol>
   </div>
 </section>
 

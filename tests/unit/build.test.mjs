@@ -79,13 +79,13 @@ test('preview: no WhatsApp link is invented while the number is missing', () => 
   assert.match(home, /data-wa-setup="" data-wa-message="Hello Ghada! I found your GK Atelier website/);
 });
 
-test('preview: kept out of search engines and clearly marked', () => {
+test('preview: kept out of search engines, with no banner on the pages', () => {
   assert.equal(read(preview.outDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   assert.ok(!fs.existsSync(path.join(preview.outDir, 'sitemap.xml')));
   for (const file of htmlFiles(preview.outDir)) {
     const page = read(preview.outDir, file);
     assert.match(page, /<meta name="robots" content="noindex, nofollow">/, file);
-    assert.match(page, /class="preview-bar"/, file);
+    assert.ok(!page.includes('preview-bar'), `${file} shows no preview banner`);
   }
   for (const p of shipped.products) {
     const product = read(preview.outDir, `products/${p.slug}/index.html`);
@@ -263,14 +263,14 @@ test('configured: custom order page carries the enquiry settings', () => {
 
 test('configured: logo, social links and organisation data use supplied values only', () => {
   const home = read(configured.outDir, 'en/index.html');
-  // Header: the monogram and name on larger screens, the monogram alone on
-  // phones — both cut from the supplied logo, in proportion.
-  const wordmark = home.match(/<img class="brand__wordmark" src="(\/img\/gk-atelier-logo-without-tagline-[0-9a-f]+-192\.webp)" width="(\d+)" height="192" alt="GK Atelier by Ghada Khalil">/);
+  // Header: the name lines cut from the supplied logo, in proportion.
+  const wordmark = home.match(/<img class="brand__wordmark" src="(\/img\/gk-atelier-wordmark-[0-9a-f]+-168\.webp)" width="(\d+)" height="168" alt="GK Atelier by Ghada Khalil">/);
   assert.ok(wordmark, 'header wordmark');
-  assert.equal(Number(wordmark[2]), Math.round((961 / 825) * 192));
+  assert.equal(Number(wordmark[2]), 931);
   assert.ok(fs.existsSync(path.join(configured.outDir, wordmark[1])));
-  const mark = home.match(/<img class="brand__logo" src="(\/img\/gk-atelier-monogram-[0-9a-f]+-192\.webp)" width="(\d+)" height="192" alt="GK Atelier by Ghada Khalil">/);
-  assert.ok(mark, 'header monogram');
+  // Menu: the GK monogram, also cut from the logo.
+  const mark = home.match(/<img class="site-nav__mark" src="(\/img\/gk-atelier-monogram-[0-9a-f]+-192\.webp)" width="(\d+)" height="192" alt="">/);
+  assert.ok(mark, 'menu monogram');
   assert.equal(Number(mark[2]), Math.round((780 / 584) * 192));
   assert.ok(fs.existsSync(path.join(configured.outDir, mark[1])));
   // Footer: the logo without its tagline.

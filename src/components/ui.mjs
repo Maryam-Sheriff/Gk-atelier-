@@ -53,12 +53,11 @@ export function priceText(ctx, price) {
   return price.from ? ctx.t('product.price_from', { price: formatted }) : formatted;
 }
 
-export function collectionCard(ctx, collection, { headingLevel = 3, sizes, linkLabel, index } = {}) {
+export function collectionCard(ctx, collection, { headingLevel = 3, sizes, linkLabel, showText = true } = {}) {
   const tag = `h${headingLevel}`;
   const name = pick(collection.name, ctx.lang);
   return html`<article class="card card--collection">
     <div class="card__media">
-      ${index ? html`<span class="card__index" aria-hidden="true">${decorativeNumber(index, ctx.lang)}</span>` : ''}
       ${picture(ctx, collection.image, {
         sizes: sizes ?? '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 50vw',
         alt: name,
@@ -67,7 +66,7 @@ export function collectionCard(ctx, collection, { headingLevel = 3, sizes, linkL
     </div>
     <div class="card__body">
       ${html([`<${tag} class="card__title">`, `</${tag}>`], html`<a class="card__link" href="${ctx.url(`/collections/${collection.slug}/`)}">${text(collection.name, ctx.lang)}</a>`)}
-      <p class="card__text">${text(collection.short, ctx.lang)}</p>
+      ${showText ? html`<p class="card__text">${text(collection.short, ctx.lang)}</p>` : ''}
       <span class="card__more" aria-hidden="true">${linkLabel ?? ctx.t('home.explore_collection')}${icon('arrow', { className: 'icon icon--flip' })}</span>
     </div>
   </article>`;

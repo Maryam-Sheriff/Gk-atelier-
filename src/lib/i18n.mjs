@@ -56,10 +56,13 @@ export function formatNumber(value, lang) {
   return new Intl.NumberFormat(LANGS[lang].intl).format(value);
 }
 
-/** Arabic-Indic digits for decorative numerals (step numbers) on Arabic pages. */
+/**
+ * Decorative numerals (step numbers): "01" in English; Arabic-Indic digits
+ * without the leading zero on Arabic pages, where "٠١" reads as a dot and a one.
+ */
 export function decorativeNumber(value, lang) {
-  const text = String(value).padStart(2, '0');
-  return lang === 'ar' ? text.replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]) : text;
+  if (lang === 'ar') return String(value).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+  return String(value).padStart(2, '0');
 }
 
 export function formatPrice(price, lang) {

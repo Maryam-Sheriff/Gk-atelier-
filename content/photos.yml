@@ -11,15 +11,9 @@
 
 # The top of the homepage. Left empty (as now), the homepage opens with the
 # GK Atelier logo, large and centred, with a gentle shimmer. To open with a
-# photograph instead, write its path here (a portrait photo works best);
-# hero_detail adds a second, smaller photo beside it.
+# photograph instead, write its path here (a portrait photo works best): it
+# then fills half the screen beside the opening words.
 hero:
-  src: ""
-  alt:
-    en: ""
-    ar: ""
-
-hero_detail:
   src: ""
   alt:
     en: ""

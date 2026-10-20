@@ -56,5 +56,6 @@ test('prices are formatted per language without inventing decimals', () => {
 
 test('decorative step numbers use Arabic-Indic digits on Arabic pages', () => {
   assert.equal(decorativeNumber(1, 'en'), '01');
-  assert.equal(decorativeNumber(3, 'ar'), '٠٣');
+  assert.equal(decorativeNumber(3, 'ar'), '٣');
+  assert.equal(decorativeNumber(12, 'ar'), '١٢');
 });

@@ -4,8 +4,8 @@ The website is complete and working, but it ships as a **preview**. It
 contains no invented contact details, products, prices or biography: the
 number, biography and positioning come from Ghada's own brief.
 
-While anything in the first section is missing, the site shows a slim
-"Preview" bar, tells search engines not to index it, and
+While anything in the first section is missing, the site tells search
+engines not to index it (the pages themselves show no banner), and
 `npm run build:release` refuses to build. `npm run check` lists what is left
 at any time.
 
@@ -21,8 +21,9 @@ at any time.
       https://maryam-sheriff.github.io/Gk-atelier-/ (`site.url` in
       `content/settings.yml`). If a domain is bought later, see README.md →
       Custom domain.
-- [x] **Logo:** added (`images/brand/`), with the header monogram, homepage
-      and footer versions, browser icon and sharing image cut from it.
+- [x] **Logo:** added (`images/brand/`), with the header wordmark, menu
+      monogram, homepage and footer versions, browser icon and sharing image
+      cut from it.
 - [x] **Real products:** twenty-eight pieces in nine collections are on the site and the sample
       listings are switched off. Keep adding pieces (see EDITING-GUIDE.md), and
       add prices, sizes and timings to each piece once Ghada confirms them.
@@ -73,7 +74,7 @@ at any time.
       `content/settings.yml` to spotlight another collection.
 - [ ] Instagram (and any other) account links in `content/settings.yml`.
 - [ ] Optional: an SVG version of the logo from the designer, for an even
-      sharper header monogram.
+      sharper header.
 
 ## Going live
 

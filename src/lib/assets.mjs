@@ -16,17 +16,17 @@ const ARABIC =
 // Arabic fonts only carry Arabic glyphs here, so Latin words on Arabic pages
 // (like "GK Atelier") keep the English typefaces.
 const FONTS = [
+  { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 300, style: 'normal', preload: 'en' },
+  { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 300, style: 'italic' },
   { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 400, style: 'normal' },
-  { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 500, style: 'normal', preload: 'en' },
-  { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 600, style: 'normal' },
   { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 400, style: 'italic' },
+  { family: 'Cormorant Garamond', pkg: 'cormorant-garamond', subset: 'latin', range: LATIN, weight: 500, style: 'normal' },
   { family: 'Jost', pkg: 'jost', subset: 'latin', range: LATIN, weight: 400, style: 'normal', preload: 'en' },
   { family: 'Jost', pkg: 'jost', subset: 'latin', range: LATIN, weight: 500, style: 'normal' },
   { family: 'Amiri', pkg: 'amiri', subset: 'arabic', range: ARABIC, weight: 400, style: 'normal', preload: 'ar' },
-  { family: 'Amiri', pkg: 'amiri', subset: 'arabic', range: ARABIC, weight: 700, style: 'normal' },
+  { family: 'IBM Plex Sans Arabic', pkg: 'ibm-plex-sans-arabic', subset: 'arabic', range: ARABIC, weight: 300, style: 'normal' },
   { family: 'IBM Plex Sans Arabic', pkg: 'ibm-plex-sans-arabic', subset: 'arabic', range: ARABIC, weight: 400, style: 'normal', preload: 'ar' },
   { family: 'IBM Plex Sans Arabic', pkg: 'ibm-plex-sans-arabic', subset: 'arabic', range: ARABIC, weight: 500, style: 'normal' },
-  { family: 'IBM Plex Sans Arabic', pkg: 'ibm-plex-sans-arabic', subset: 'arabic', range: ARABIC, weight: 600, style: 'normal' },
 ];
 
 const hash = (data) => crypto.createHash('sha1').update(data).digest('hex').slice(0, 10);

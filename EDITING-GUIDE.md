@@ -48,14 +48,15 @@ redrawn or stretched:
 | File | Where it appears |
 | --- | --- |
 | `gk-atelier-logo.png` | the original, used by Google |
-| `gk-atelier-monogram.png` | the GK monogram in the header |
+| `gk-atelier-wordmark.png` | the name lines, "GK ATELIER / BY GHADA KHALIL", across the top of every page |
+| `gk-atelier-monogram.png` | the GK monogram in the menu |
 | `gk-atelier-logo-without-tagline.png` | the homepage (until a hero photo is added) and the footer |
 | `gk-atelier-icon.png` | browser tabs and phone home screens |
 | `gk-atelier-share.jpg` | the preview card when a link is shared on WhatsApp or Instagram |
 
 If the logo ever changes, replace these files (same names) or point to the new
 ones in `content/settings.yml` under `brand:`. An SVG version from the
-designer would make the header monogram even sharper.
+designer would make the header even sharper.
 
 ## Language
 
@@ -115,9 +116,8 @@ whole photo.
 ## 4. Photographs for the homepage, collections and About page
 
 - **Homepage and About page:** upload photos to `images/atelier/` and write
-  their paths in `content/photos.yml`: the big arched homepage photo (`hero`)
-  and the small one beside it (`hero_detail`), the photo next to "Made for
-  your vision" (`custom`), Ghada's portrait (`ghada`), six photos for "A
+  their paths in `content/photos.yml`: a photo to open the homepage instead
+  of the logo (`hero`), the photo next to "Made for your vision" (`custom`), Ghada's portrait (`ghada`), six photos for "A
   glimpse into the atelier" (`glimpse`), and photos of the workspace,
   materials and team for the About page (`process`).
 - **Collection covers:** upload to `images/collections/` and write the path

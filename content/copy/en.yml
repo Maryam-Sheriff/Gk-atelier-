@@ -21,7 +21,6 @@ nav:
   about: About Ghada
   contact: Contact
   all_collections: The collections
-  topbar: Handmade in Egypt · Serving Egypt and the Gulf
   menu: Menu
   close_menu: Close menu
   switch_label: العربية
@@ -550,13 +549,3 @@ footer:
   connect_text: For pieces, custom projects and professional orders.
   privacy: Privacy
   copyright: "© {year} GK Atelier by Ghada Khalil"
-
-preview:
-  label: Preview
-  text: "Not yet published. Still to do: {items}."
-  items:
-    whatsapp: add the WhatsApp number
-    url: add the website address
-    logo: add the logo
-    arabic: review the Arabic text
-    samples: replace the sample products

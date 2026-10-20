@@ -1,6 +1,5 @@
 import { html } from '../lib/html.mjs';
 import { pick } from '../lib/i18n.mjs';
-import { craftIcon, icon } from '../components/icons.mjs';
 import { largestUrl, picture } from '../components/media.mjs';
 import {
   button,
@@ -16,26 +15,36 @@ import {
 } from '../components/ui.mjs';
 
 const GLIMPSE_ICONS = ['hoop', 'knot', 'yarn', 'brush', 'rings', 'gift'];
-const EXPERTISE_ICONS = ['easel', 'dressform', 'needle', 'team'];
+
+// The homepage collections cascade: two large windows, then three, then four.
+function tileSizes(i) {
+  if (i === 0) return '(min-width: 960px) 46vw, 100vw';
+  if (i < 2) return '(min-width: 960px) 46vw, 50vw';
+  return i < 5 ? '(min-width: 960px) 30vw, 50vw' : '(min-width: 960px) 23vw, 50vw';
+}
 
 function hero(ctx) {
   const { t, content } = ctx;
   const { photos } = content;
   const actions = html`<div class="hero__actions">
         ${button(ctx.url('/collections/'), t('home.hero_primary'))}
-        ${whatsappButton(ctx, t('whatsapp.messages.project'), { label: t('home.hero_secondary'), variant: 'secondary' })}
+        ${whatsappButton(ctx, t('whatsapp.messages.project'), { label: t('home.hero_secondary'), variant: 'link' })}
       </div>`;
   const title = html`<h1 class="hero__title">${t('home.hero_title_start')} <em>${t('home.hero_title_accent')}</em></h1>`;
 
-  // Without a hero photograph, the logo leads the page: large, centred, with
-  // a soft shimmer that follows the shape of the logo itself.
+  // Without a hero photograph, the logo leads the page: alone on the first
+  // screen, with a soft shimmer that follows the shape of the logo itself.
+  // The opening words follow below it.
   if (!photos.hero && ctx.brand.lockup) {
     return html`<section class="hero hero--brand">
-  <div class="container hero__brand">
+  <div class="hero__stage">
     <div class="hero__logo" style="--logo: url('${largestUrl(ctx, ctx.brand.lockup)}')">
-      ${picture(ctx, ctx.brand.lockup, { eager: true, sizes: '(min-width: 700px) 560px, 84vw', alt: t('meta.site_name') })}
+      ${picture(ctx, ctx.brand.lockup, { eager: true, sizes: '(min-width: 700px) 520px, 78vw', alt: t('meta.site_name') })}
     </div>
-    <span class="hero__rule" aria-hidden="true"></span>
+    <span class="hero__scroll" aria-hidden="true"></span>
+  </div>
+  <div class="container hero__intro" data-reveal>
+    <p class="eyebrow">${t('home.hero_eyebrow')}</p>
     ${title}
     <p class="hero__text">${t('home.hero_text')}</p>
     ${actions}
@@ -44,34 +53,20 @@ function hero(ctx) {
   }
 
   return html`<section class="hero">
-  <div class="container hero__grid">
+  <div class="hero__grid">
+    <div class="hero__media">
+      ${picture(ctx, photos.hero, {
+        eager: true,
+        sizes: '(min-width: 960px) 50vw, 100vw',
+        alt: t('home.hero_title_start'),
+        placeholder: { icon: 'hoop' },
+      })}
+    </div>
     <div class="hero__content">
       <p class="eyebrow">${t('home.hero_eyebrow')}</p>
       ${title}
       <p class="hero__text">${t('home.hero_text')}</p>
       ${actions}
-      <p class="hero__credential">
-        <span class="hero__credential-value">${t('home.credential_value')}</span>
-        <span class="hero__credential-text">${t('home.credential_text')}</span>
-      </p>
-    </div>
-    <div class="hero__media">
-      <div class="hero__arch">
-        ${picture(ctx, photos.hero, {
-          eager: true,
-          sizes: '(min-width: 960px) 40vw, 92vw',
-          alt: t('home.hero_title_start'),
-          placeholder: { icon: 'hoop' },
-        })}
-      </div>
-      ${photos.heroDetail
-        ? html`<div class="hero__detail">
-            ${picture(ctx, photos.heroDetail, { eager: true, sizes: '(min-width: 960px) 16vw, 38vw' })}
-          </div>`
-        : ''}
-      ${ctx.brand.mark
-        ? html`<span class="hero__seal" aria-hidden="true"><img src="${ctx.brand.mark.url}" width="${ctx.brand.mark.width}" height="${ctx.brand.mark.height}" alt=""></span>`
-        : ''}
     </div>
   </div>
 </section>`;
@@ -80,18 +75,17 @@ function hero(ctx) {
 function expertise(ctx) {
   const { t } = ctx;
   return html`<section class="section expertise" aria-labelledby="expertise-title">
-  <div class="container">
-    ${sectionHeading({ eyebrow: t('home.expertise_eyebrow'), title: t('home.expertise_title'), intro: t('home.expertise_text'), id: 'expertise-title', align: 'center' })}
-    <ul class="expertise__list">
+  <div class="container expertise__grid">
+    ${sectionHeading({ eyebrow: t('home.expertise_eyebrow'), title: t('home.expertise_title'), intro: t('home.expertise_text'), id: 'expertise-title' })}
+    <ol class="expertise__list" data-reveal>
       ${t('home.expertise').map(
-        (item, i) => html`<li class="expertise__item">
-          <span class="expertise__icon">${craftIcon(EXPERTISE_ICONS[i % EXPERTISE_ICONS.length])}</span>
+        (item) => html`<li class="expertise__item">
           <p class="expertise__kicker">${item.kicker}</p>
           <h3 class="expertise__title">${item.title}</h3>
           <p class="expertise__text">${item.text}</p>
         </li>`,
       )}
-    </ul>
+    </ol>
   </div>
 </section>`;
 }
@@ -105,22 +99,24 @@ function spotlight(ctx) {
   const route = `/collections/${collection.slug}/`;
   const pieces = collection.products.slice(0, 3);
   return html`<section class="spotlight" aria-labelledby="spotlight-title">
-  <div class="container spotlight__grid">
-    <div class="spotlight__text">
-      <span class="spotlight__ornament">${craftIcon(collection.icon)}</span>
+  <div class="spotlight__media">
+    ${picture(ctx, collection.image, { sizes: '(min-width: 960px) 50vw, 100vw', alt: name, placeholder: { icon: collection.icon, subject: name } })}
+  </div>
+  <div class="spotlight__panel">
+    <div class="spotlight__text" data-reveal>
       <p class="eyebrow eyebrow--light">${t('home.spotlight_eyebrow')}</p>
       <h2 class="spotlight__title" id="spotlight-title">${text(collection.name, ctx.lang)}</h2>
       <p class="spotlight__intro">${text(collection.intro, ctx.lang)}</p>
       <div class="spotlight__actions">
-        ${button(ctx.url(route), t('home.spotlight_link'), { variant: 'light', arrow: true })}
-        ${whatsappButton(ctx, t('whatsapp.messages.collection', { collection: name }), { label: t('whatsapp.ask_collection'), variant: 'ghost-light' })}
+        ${button(ctx.url(route), t('home.spotlight_link'), { variant: 'light' })}
+        ${whatsappButton(ctx, t('whatsapp.messages.collection', { collection: name }), { label: t('whatsapp.ask_collection'), variant: 'link-light' })}
       </div>
     </div>
-    <ul class="spotlight__pieces spotlight__pieces--${pieces.length}">
+    <ul class="spotlight__pieces">
       ${pieces.map(
         (p) => html`<li class="spotlight__piece">
           <a href="${ctx.url(`/products/${p.slug}/`)}">
-            ${picture(ctx, p.images[0], { sizes: '(min-width: 960px) 22vw, 45vw', alt: pick(p.name, ctx.lang) })}
+            <span class="spotlight__thumb">${picture(ctx, p.images[0], { sizes: '(min-width: 960px) 12vw, 30vw', alt: pick(p.name, ctx.lang) })}</span>
             <span class="spotlight__caption">${text(p.name, ctx.lang)}</span>
           </a>
         </li>`,
@@ -132,31 +128,29 @@ function spotlight(ctx) {
 
 function vision(ctx) {
   const { t, content } = ctx;
-  return html`<section class="section vision" aria-labelledby="vision-title">
-  <div class="container vision__grid">
-    <div class="vision__media">
-      ${picture(ctx, content.photos.custom, {
-        sizes: '(min-width: 960px) 42vw, 100vw',
-        alt: t('home.vision_title'),
-        placeholder: { icon: 'hoop' },
-      })}
+  return html`<section class="vision" aria-labelledby="vision-title">
+  <div class="vision__media">
+    ${picture(ctx, content.photos.custom, {
+      sizes: '(min-width: 960px) 50vw, 100vw',
+      alt: t('home.vision_title'),
+      placeholder: { icon: 'hoop' },
+    })}
+  </div>
+  <div class="vision__content" data-reveal>
+    ${sectionHeading({ eyebrow: t('home.vision_eyebrow'), title: t('home.vision_title'), id: 'vision-title' })}
+    <p class="vision__text">${t('home.vision_text')}</p>
+    <ol class="fine-list">
+      ${t('home.vision_items').map((item) => html`<li>${item}</li>`)}
+    </ol>
+    <div class="vision__audiences">
+      ${t('home.vision_audiences').map(
+        (a) => html`<div class="vision__audience">
+          <h3 class="vision__audience-title">${a.title}</h3>
+          <p>${a.text}</p>
+        </div>`,
+      )}
     </div>
-    <div class="vision__content">
-      ${sectionHeading({ eyebrow: t('home.vision_eyebrow'), title: t('home.vision_title'), id: 'vision-title' })}
-      <p class="vision__text">${t('home.vision_text')}</p>
-      <ul class="stitch-list">
-        ${t('home.vision_items').map((item) => html`<li>${item}</li>`)}
-      </ul>
-      <div class="vision__audiences">
-        ${t('home.vision_audiences').map(
-          (a) => html`<div class="vision__audience">
-            <h3 class="vision__audience-title">${a.title}</h3>
-            <p>${a.text}</p>
-          </div>`,
-        )}
-      </div>
-      ${button(ctx.url('/custom-orders/'), t('home.vision_button'), { arrow: true })}
-    </div>
+    ${button(ctx.url('/custom-orders/'), t('home.vision_button'))}
   </div>
 </section>`;
 }
@@ -164,19 +158,18 @@ function vision(ctx) {
 function meetGhada(ctx) {
   const { t, content } = ctx;
   const portrait = content.photos.ghada;
-  return html`<section class="section artisan" aria-labelledby="ghada-title">
-  <div class="container artisan__grid">
-    <div class="artisan__media">
-      ${portrait
-        ? html`<div class="artisan__portrait">${picture(ctx, portrait, { sizes: '(min-width: 960px) 36vw, 100vw', alt: ctx.lang === 'ar' ? 'غادة خليل' : 'Ghada Khalil' })}</div>`
-        : html`<figure class="artisan__quote">
-            ${ctx.brand.mark ? html`<img class="artisan__mark" src="${ctx.brand.mark.url}" width="${ctx.brand.mark.width}" height="${ctx.brand.mark.height}" alt="">` : ''}
-            <blockquote><p>${t('home.ghada_quote')}</p></blockquote>
-            <figcaption>${t('home.ghada_signature')}</figcaption>
-          </figure>`}
-    </div>
+  const quote = html`<figure class="artisan__quote">
+      <blockquote><p>${t('home.ghada_quote')}</p></blockquote>
+      <figcaption>${t('home.ghada_signature')}</figcaption>
+    </figure>`;
+  return html`<section class="section artisan${portrait ? ' artisan--portrait' : ''}" aria-labelledby="ghada-title">
+  <div class="container artisan__grid" data-reveal>
+    ${portrait
+      ? html`<div class="artisan__portrait">${picture(ctx, portrait, { sizes: '(min-width: 960px) 40vw, 100vw', alt: ctx.lang === 'ar' ? 'غادة خليل' : 'Ghada Khalil' })}</div>`
+      : html`${ctx.brand.mark ? html`<img class="artisan__mark" src="${ctx.brand.mark.url}" width="${ctx.brand.mark.width}" height="${ctx.brand.mark.height}" alt="">` : ''}${quote}`}
     <div class="artisan__content">
       ${sectionHeading({ eyebrow: t('home.ghada_eyebrow'), title: t('home.ghada_title'), id: 'ghada-title' })}
+      ${portrait ? quote : ''}
       <div class="prose">${paragraphs(t('home.ghada_text'))}</div>
       ${textLink(ctx.url('/about/'), t('home.ghada_link'))}
     </div>
@@ -195,23 +188,25 @@ ${hero(ctx)}
 
 ${expertise(ctx)}
 
-<section class="section section--linen" aria-labelledby="collections-title">
+${spotlight(ctx)}
+
+<section class="section" aria-labelledby="collections-title">
   <div class="container">
-    ${sectionHeading({ eyebrow: t('home.collections_eyebrow'), title: t('home.collections_title'), intro: t('home.collections_text'), id: 'collections-title', align: 'center' })}
-    <div class="collection-grid collection-grid--home">
-      ${collections.map((c, i) => collectionCard(ctx, c, { index: i + 1 }))}
+    <div class="section-bar">
+      ${sectionHeading({ eyebrow: t('home.collections_eyebrow'), title: t('home.collections_title'), intro: t('home.collections_text'), id: 'collections-title' })}
+      ${textLink(ctx.url('/collections/'), t('home.all_collections'))}
     </div>
-    <p class="section-more">${button(ctx.url('/collections/'), t('home.all_collections'), { variant: 'secondary', arrow: true })}</p>
+    <div class="collection-grid collection-grid--home">
+      ${collections.map((c, i) => collectionCard(ctx, c, { showText: false, sizes: tileSizes(i) }))}
+    </div>
   </div>
 </section>
 
-${spotlight(ctx)}
-
 ${featured.length
-  ? html`<section class="section" aria-labelledby="featured-title">
+  ? html`<section class="section section--stone" aria-labelledby="featured-title">
   <div class="container">
     ${sectionHeading({ eyebrow: t('home.featured_eyebrow'), title: t('home.featured_title'), id: 'featured-title', align: 'center' })}
-    <div class="product-grid">
+    <div class="product-grid product-grid--featured">
       ${featured.map((p) => productCard(ctx, p))}
     </div>
   </div>
@@ -220,7 +215,7 @@ ${featured.length
 
 ${vision(ctx)}
 
-<section class="section section--linen" aria-labelledby="glimpse-title">
+<section class="section" aria-labelledby="glimpse-title">
   <div class="container">
     ${sectionHeading({ eyebrow: t('home.glimpse_eyebrow'), title: t('home.glimpse_title'), intro: t('home.glimpse_text'), id: 'glimpse-title', align: 'center' })}
     <div class="glimpse">
@@ -239,7 +234,7 @@ ${vision(ctx)}
 
 ${meetGhada(ctx)}
 
-<section class="section section--beige" aria-labelledby="steps-title">
+<section class="section section--stone" aria-labelledby="steps-title">
   <div class="container">
     ${sectionHeading({ eyebrow: t('home.steps_eyebrow'), title: t('home.steps_title'), id: 'steps-title', align: 'center' })}
     ${steps(ctx)}
@@ -247,8 +242,7 @@ ${meetGhada(ctx)}
 </section>
 
 <section class="final-cta" aria-labelledby="final-title">
-  <div class="container final-cta__inner">
-    <span class="final-cta__ornament" aria-hidden="true">${icon('whatsapp')}</span>
+  <div class="container final-cta__inner" data-reveal>
     <h2 class="final-cta__title" id="final-title">${t('home.final_title')}</h2>
     <p class="final-cta__text">${t('home.final_text')}</p>
     ${whatsappButton(ctx, t('whatsapp.messages.project'), { label: t('home.final_button'), variant: 'light', size: 'large' })}

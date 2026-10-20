@@ -35,15 +35,15 @@
     }
   });
 
-  /* Mobile menu: a full-screen panel with its own close button. */
+  /* Phones and tablets: a full-screen menu with its own close button. */
   (function menu() {
     var toggle = $('.nav-toggle');
     var nav = $('#site-nav');
     if (!toggle || !nav) return;
     var label = $('.nav-toggle__label', toggle);
     var close = $('[data-nav-close]', nav);
-    var outside = [$('main'), $('.site-footer'), $('.btn--float'), $('.topbar'), $('.masthead')].filter(Boolean);
-    var desktop = window.matchMedia('(min-width: 960px)');
+    var outside = [$('main'), $('.site-footer'), $('.btn--float'), $('.masthead')].filter(Boolean);
+    var desktop = window.matchMedia('(min-width: 1024px)');
 
     function setOpen(open) {
       toggle.setAttribute('aria-expanded', String(open));
@@ -81,14 +81,16 @@
     });
   })();
 
-  /* The header gains a soft shadow once the page scrolls under it. */
-  (function headerShadow() {
+  /* Once the page scrolls: a hairline under the header, and the floating
+     WhatsApp button appears after the opening screen. */
+  (function scrollState() {
     var header = $('[data-header]');
     if (!header) return;
     var queued = false;
     function update() {
       queued = false;
       document.body.classList.toggle('is-scrolled', window.scrollY > 8);
+      document.body.classList.toggle('show-float', window.scrollY > window.innerHeight * 0.6);
     }
     window.addEventListener(
       'scroll',
@@ -101,6 +103,31 @@
       { passive: true },
     );
     update();
+  })();
+
+  /* Sections settle into place as they come into view. */
+  (function reveal() {
+    var items = $$('[data-reveal]');
+    if (!items.length) return;
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      items.forEach(function (el) {
+        el.classList.add('is-revealed');
+      });
+      return;
+    }
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+    items.forEach(function (el) {
+      observer.observe(el);
+    });
   })();
 
   /* Preview only: explain that WhatsApp isn't connected yet and show the message. */

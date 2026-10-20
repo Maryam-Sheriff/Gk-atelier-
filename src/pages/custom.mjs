@@ -53,7 +53,7 @@ export function customPage(ctx) {
   </div>
 </section>
 
-<section class="section section--linen section--tight" aria-label="${t('custom.audiences_label')}">
+<section class="section section--stone section--tight" aria-label="${t('custom.audiences_label')}">
   <div class="container">
     <div class="audiences">
       ${t('custom.audiences').map(
@@ -61,7 +61,7 @@ export function customPage(ctx) {
           <p class="eyebrow">${a.eyebrow}</p>
           <h2 class="audience__title">${a.title}</h2>
           <p class="audience__text">${a.text}</p>
-          <ul class="stitch-list">${a.items.map((item) => html`<li>${item}</li>`)}</ul>
+          <ul class="fine-list">${a.items.map((item) => html`<li>${item}</li>`)}</ul>
         </div>`,
       )}
     </div>

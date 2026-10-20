@@ -277,7 +277,6 @@ test.describe('preview without a WhatsApp number', () => {
     const product = previewContent().products[0];
     await page.goto(`${PREVIEW}/en/products/${product.slug}/`);
     await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
-    await expect(page.locator('.preview-bar')).toBeVisible();
     await page.locator('[data-product-cta] a').click();
     const dialog = page.locator('#whatsapp-setup');
     await expect(dialog).toBeVisible();

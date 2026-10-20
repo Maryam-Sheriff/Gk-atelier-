@@ -74,7 +74,8 @@ of every page, including on phones.
 The build knows what is still missing (number, domain, logo, Arabic review,
 sample products). Until all of it is in place:
 
-- a slim **Preview** bar lists the open items,
+- every build (and `npm run check`) lists the open items in the terminal;
+  the pages themselves carry no banner,
 - every page carries `noindex`, `robots.txt` disallows crawling, and no sitemap
   is produced,
 - `npm run build:release` exits with the list instead of building.
@@ -86,9 +87,10 @@ Once complete, the same build produces the indexable site with `sitemap.xml`
 
 The brief asks for nothing to be invented, so the site ships with:
 
-- **The supplied logo, untouched.** The header uses the monogram and name on
-  larger screens and the GK monogram on phones; both are straight crops of
-  the supplied transparent PNG, never redrawn or stretched. The browser icon
+- **The supplied logo, untouched.** The header uses its name lines ("GK
+  ATELIER / BY GHADA KHALIL"), the menu the GK monogram, and the homepage and
+  footer the monogram with the name; all are straight crops of the supplied
+  transparent PNG, never redrawn, recoloured or stretched. The browser icon
   and the link-preview image are made from the same file.
 - **Ghada's own story.** The biography, the four highlights (over 30 years of
   art teaching, work with designers and wedding and eveningwear ateliers,
@@ -96,7 +98,7 @@ The brief asks for nothing to be invented, so the site ships with:
   WhatsApp number and the positioning all come from Ghada's brief. No awards,
   clients or collaborations are named.
 - **No invented photographs.** Until there is a portrait of Ghada, the
-  homepage shows her words on a linen panel and the About page opens with her
+  homepage shows her words as a quotation and the About page opens with her
   work. Any empty photo slot shows a clearly labelled "Photograph coming
   soon" panel that can't be mistaken for a product.
 - **Real pieces described only from their photographs.** Twenty-eight of
@@ -187,23 +189,27 @@ tests/e2e/              Playwright — customer journeys, axe accessibility, ove
 
 | Token | Value | Use |
 | --- | --- | --- |
-| Ivory | `#F8F4EE` | page background |
-| Soft beige | `#E9DED1` | alternate sections, placeholders, footer |
-| Champagne gold | `#B69A70` | hairlines, frames, icons on dark |
-| Gold (text) | `#725E3D` | small gold labels (5.7 : 1 on ivory, 4.7 : 1 on beige) |
-| Muted taupe | `#887565` | large text and decoration |
-| Taupe (text) | `#6E5D50` | secondary body text (5.7 : 1 on ivory) |
-| Deep espresso | `#342A25` | text, primary buttons, dark bands (12.7 : 1) |
-| Dusty blush | `#D8BDB5` | preview bar, sample notices |
+| Paper | `#FBF9F6` | page background, footer |
+| Stone | `#F3EEE7` | alternate sections |
+| Sand | `#E9E1D6` | behind photos while they load, placeholders |
+| Ink | `#1C1814` | text, primary buttons, the dark bands (16.8 : 1 on paper) |
+| Soft ink | `#4B433C` | body copy |
+| Muted | `#6D645C` | secondary text (5.5 : 1 on paper, 5 : 1 on stone) |
+| Gold | `#B0905C` | hairlines and accents only |
+| Gold (text) | `#7B6139` | small gold labels (5.5 : 1 on paper) |
 
-The brand gold and taupe are too light for small text on ivory, so darker
-shades of the same hues are used where text must stay readable (WCAG AA).
-
-The look borrows from the atelier itself: a woven-linen texture on the page
-and on beige sections (generated in CSS, no image files), running-stitch
-seams between sections, lace-trimmed edges on the dark bands and footer,
-arched frames like atelier windows, and stitched frames on photos. Headings
-use Cormorant Garamond (Amiri in Arabic) with gold italic accents.
+The look follows the couture houses: warm white and ink, generous space,
+and very little ornament, so the photographs and the gold of the logo carry
+the colour. Fine hairlines divide content instead of boxes and icons.
+Headings are set in light Cormorant Garamond (Amiri in Arabic), labels in
+small tracked capitals (Jost; IBM Plex Sans Arabic in Arabic), and numbers
+in lining figures. The homepage opens with the logo alone on the first
+screen; the spotlighted collection and "Made for your vision" are split
+screens with the photograph running to the edge, and the collections
+cascade two, three and four across. Motion is slow and quiet: the logo
+rises in and catches a soft sheen, sections settle into place as they
+scroll into view, photos open slightly on hover, and all of it is switched
+off for visitors who prefer reduced motion.
 
 ## Testing
 
@@ -244,7 +250,7 @@ https://maryam-sheriff.github.io/Gk-atelier-/.
   `content/settings.yml` holds the full Pages address, and every link,
   photo and font is built under that folder.
 - Until the launch checklist is complete, the published site is the
-  **preview**: it shows the Preview bar and is hidden from search engines.
+  **preview**: it is hidden from search engines (the pages carry no banner).
   Once the number and the Arabic review are in, the same workflow publishes
   the full, indexable site with nothing else to change.
 - `.github/workflows/test.yml` runs the unit and browser tests on pull

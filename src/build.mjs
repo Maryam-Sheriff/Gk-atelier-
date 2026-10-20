@@ -36,7 +36,6 @@ async function processImages(content, pipeline) {
     brandRefs.logo,
     brandRefs.logo_without_tagline,
     photos.hero,
-    photos.heroDetail,
     photos.custom,
     photos.ghada,
     ...photos.glimpse.map((g) => g.image),
@@ -59,6 +58,7 @@ async function processImages(content, pipeline) {
   for (const ref of shareSources) shares.set(ref.src, await pipeline.share(ref.src));
 
   const markSource = brandRefs.logo_monogram ?? brandRefs.logo;
+  const wordmarkSource = brandRefs.logo_wordmark ?? brandRefs.logo_without_tagline;
   const brand = {
     // The full logo as supplied (used for search engines).
     logo: brandRefs.logo,
@@ -66,8 +66,8 @@ async function processImages(content, pipeline) {
     mark: markSource ? await pipeline.logo(markSource.src) : null,
     // Larger version for the homepage and footer.
     lockup: brandRefs.logo_without_tagline ?? brandRefs.logo,
-    // The monogram and name together, sharp and transparent, for the header.
-    wordmark: brandRefs.logo_without_tagline ? await pipeline.logo(brandRefs.logo_without_tagline.src) : null,
+    // The name lines alone, sharp and transparent, across the top of every page.
+    wordmark: wordmarkSource ? await pipeline.logo(wordmarkSource.src) : null,
     icon: brandRefs.icon ? await pipeline.icon(brandRefs.icon.src) : null,
   };
   const defaultShare = settings.brand.share_image ?? photos.hero ?? null;

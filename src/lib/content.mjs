@@ -107,7 +107,7 @@ function loadSettings(root, report) {
   if (language === 'ar' || language === 'en') settings.defaultLanguage = language;
   else if (language != null && language !== '') report.error(file, `site → default_language must be ar or en (not "${language}").`);
 
-  for (const key of ['logo', 'logo_monogram', 'logo_without_tagline', 'icon', 'share_image']) {
+  for (const key of ['logo', 'logo_monogram', 'logo_without_tagline', 'logo_wordmark', 'icon', 'share_image']) {
     const value = data.brand?.[key];
     settings.brand[key] = isText(value)
       ? imageRef(root, value, { file, label: `brand → ${key}`, allowSvg: key !== 'share_image' }, report)
@@ -143,7 +143,7 @@ function loadPhotos(root, report) {
       image: withAlt(imageRef(root, item, { file, label: `${key} photo ${i + 1}` }, report), `${key} photo ${i + 1}`),
       caption: bilingual(item?.caption),
     }));
-  return { hero: one('hero'), heroDetail: one('hero_detail'), custom: one('custom'), ghada: one('ghada'), glimpse: list('glimpse'), process: list('process') };
+  return { hero: one('hero'), custom: one('custom'), ghada: one('ghada'), glimpse: list('glimpse'), process: list('process') };
 }
 
 function loadCollections(root, report) {
