@@ -301,7 +301,7 @@ test('without a hero photograph the logo leads the homepage', async () => {
   await build({ root, outDir, log: () => {} });
   const home = read(outDir, 'index.html');
   assert.match(home, /<section class="hero hero--brand">/);
-  assert.match(home, /<div class="hero__logo">\s*<picture>/);
+  assert.match(home, /<div class="hero__logo" style="--logo: url\('(?:\/[^/']+)?\/img\/gk-atelier-logo-without-tagline-[0-9a-f]+-\d+\.webp'\)">\s*<picture>/);
   assert.match(home, /fetchpriority="high"/);
 });
 

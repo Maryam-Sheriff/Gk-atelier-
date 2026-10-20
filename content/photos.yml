@@ -9,22 +9,21 @@
 #  shows a clearly labelled "photograph coming soon" placeholder.
 # ─────────────────────────────────────────────────────────────────────────────
 
-# The large photograph at the top of the homepage. A portrait (tall) photo of
-# a finished piece or a beautiful detail works best. Any photo in images/ can
-# be used, including a product photo. While this is empty, the homepage opens
-# with the logo instead.
+# The top of the homepage. Left empty (as now), the homepage opens with the
+# GK Atelier logo, large and centred, with a gentle shimmer. To open with a
+# photograph instead, write its path here (a portrait photo works best);
+# hero_detail adds a second, smaller photo beside it.
 hero:
-  src: images/products/golden-wreath-katb-el-ketab-handkerchief/1.jpg
+  src: ""
   alt:
-    en: Katb el-ketab handkerchief with names and a wreath of leaves and flowers worked in gold beads and pearls
-    ar: منديل كتب كتاب عليه أسماء وإكليل من الأوراق والزهور مشغول بالخرز الذهبي واللؤلؤ
+    en: ""
+    ar: ""
 
-# A second, smaller photograph shown beside the large one (optional).
 hero_detail:
-  src: images/products/jewel-embellished-black-dress/1.jpg
+  src: ""
   alt:
-    en: Black dress on a dress form, embellished with jewelled motifs in coloured stones
-    ar: فستان أسود على مانيكان مزيّن بتصاميم من الأحجار الملوّنة
+    en: ""
+    ar: ""
 
 # The photograph beside "Made for your vision" (custom and professional
 # projects) on the homepage.

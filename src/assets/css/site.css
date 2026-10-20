@@ -1374,8 +1374,12 @@ main:focus {
   }
 }
 
-/* Until a hero photo is chosen, the logo leads the page. */
+/* Without a hero photo, the logo leads the page: large and centred on a
+   soft pool of light, rising gently into view, with a golden sheen that
+   passes across the logo now and then. */
 .hero--brand {
+  padding-block: clamp(20px, 4vw, 56px) clamp(56px, 8vw, 112px);
+  background-image: radial-gradient(ellipse 60% 48% at 50% 34%, rgba(255, 253, 248, 0.9), transparent 70%);
   text-align: center;
 }
 
@@ -1386,12 +1390,168 @@ main:focus {
 }
 
 .hero__logo {
-  width: min(420px, 72vw);
-  margin-bottom: 2rem;
+  position: relative;
+  width: min(560px, 84vw);
+  animation:
+    logo-in 1.8s var(--ease) both,
+    logo-float 9s ease-in-out 1.8s infinite;
+}
+
+.hero__logo picture,
+.hero__logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The sheen is masked by the logo, so it only ever lights the gold. */
+.hero__logo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 246, 222, 0.7) 50%, transparent 60%) no-repeat;
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
+  mix-blend-mode: screen;
+  animation: logo-sheen 8s ease-in-out 2.2s infinite;
+  pointer-events: none;
+}
+
+.hero__rule {
+  display: block;
+  width: 120px;
+  height: 1px;
+  margin: clamp(20px, 3vw, 32px) 0 clamp(24px, 3.4vw, 36px);
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  animation: rule-in 1.4s var(--ease) 0.9s both;
+}
+
+.hero--brand .hero__title {
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.4rem);
+  line-height: 1.12;
+}
+
+[lang='ar'] .hero--brand .hero__title {
+  font-size: clamp(1.9rem, 1.3rem + 2.2vw, 3rem);
+  line-height: 1.5;
+}
+
+.hero--brand .hero__title,
+.hero--brand .hero__text,
+.hero--brand .hero__actions {
+  animation: rise-in 1.2s var(--ease) both;
+}
+
+.hero--brand .hero__title {
+  animation-delay: 1s;
+}
+
+.hero--brand .hero__text {
+  margin-inline: auto;
+  animation-delay: 1.2s;
 }
 
 .hero--brand .hero__actions {
   justify-content: center;
+  max-width: 640px;
+  animation-delay: 1.4s;
+}
+
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes logo-sheen {
+  0% {
+    background-position: 130% 0;
+  }
+
+  45%,
+  100% {
+    background-position: -30% 0;
+  }
+}
+
+@keyframes rule-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* On the homepage the big logo is the masthead: the small header logo only
+   appears once the page scrolls (phones), and the large header wordmark
+   steps aside on bigger screens. */
+.page-home .masthead__brand {
+  transition:
+    opacity 0.4s var(--ease),
+    visibility 0.4s;
+}
+
+.page-home:not(.is-scrolled) .masthead__brand {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (min-width: 960px) {
+  .page-home .masthead__brand .brand__wordmark {
+    display: none;
+  }
+
+  .page-home .masthead {
+    padding-block: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__logo,
+  .hero__logo::after,
+  .hero__rule,
+  .hero--brand .hero__title,
+  .hero--brand .hero__text,
+  .hero--brand .hero__actions {
+    animation: none;
+  }
 }
 
 /* ---------- Expertise ---------- */

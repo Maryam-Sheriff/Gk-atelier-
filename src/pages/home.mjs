@@ -1,7 +1,7 @@
 import { html } from '../lib/html.mjs';
 import { pick } from '../lib/i18n.mjs';
 import { craftIcon, icon } from '../components/icons.mjs';
-import { picture } from '../components/media.mjs';
+import { largestUrl, picture } from '../components/media.mjs';
 import {
   button,
   collectionCard,
@@ -27,14 +27,15 @@ function hero(ctx) {
       </div>`;
   const title = html`<h1 class="hero__title">${t('home.hero_title_start')} <em>${t('home.hero_title_accent')}</em></h1>`;
 
-  // Until a hero photograph is chosen, the logo leads the page instead of an
-  // empty photo frame.
+  // Without a hero photograph, the logo leads the page: large, centred, with
+  // a soft shimmer that follows the shape of the logo itself.
   if (!photos.hero && ctx.brand.lockup) {
     return html`<section class="hero hero--brand">
   <div class="container hero__brand">
-    <div class="hero__logo">
-      ${picture(ctx, ctx.brand.lockup, { eager: true, sizes: '(min-width: 700px) 420px, 72vw', alt: t('meta.site_name') })}
+    <div class="hero__logo" style="--logo: url('${largestUrl(ctx, ctx.brand.lockup)}')">
+      ${picture(ctx, ctx.brand.lockup, { eager: true, sizes: '(min-width: 700px) 560px, 84vw', alt: t('meta.site_name') })}
     </div>
+    <span class="hero__rule" aria-hidden="true"></span>
     ${title}
     <p class="hero__text">${t('home.hero_text')}</p>
     ${actions}
