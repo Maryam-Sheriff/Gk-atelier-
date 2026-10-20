@@ -257,7 +257,10 @@ https://maryam-sheriff.github.io/Gk-atelier-/.
   requests and on changes to the code (not on content-only edits).
 
 **One-time setup:** in the repository's **Settings → Pages**, under
-**Build and deployment**, set **Source** to **GitHub Actions**.
+**Build and deployment**, set **Source** to **GitHub Actions**. Until then
+GitHub also publishes the bare repository (just the README, so every inner
+page is a 404) after each push; the publish workflow waits for that build to
+finish and then publishes the real site over it.
 
 ### Custom domain
 

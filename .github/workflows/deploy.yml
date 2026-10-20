@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -48,5 +49,21 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # While Settings → Pages → Source is still "Deploy from a branch",
+      # GitHub also publishes the bare repository after every push, which
+      # replaces the site with the README and makes every inner page a 404.
+      # Publishing only after that build has finished keeps the real site
+      # live. Once the source is "GitHub Actions" there is nothing to wait for.
+      - name: Wait for GitHub's own branch build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 40); do
+            busy=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=50" \
+              --jq '[.workflow_runs[] | select((.path | startswith("dynamic/pages")) and .status != "completed")] | length' || echo 0)
+            if [ "$busy" = "0" ]; then exit 0; fi
+            echo "GitHub's branch build is still running; publishing once it has finished."
+            sleep 10
+          done
       - id: deployment
         uses: actions/deploy-pages@v4
