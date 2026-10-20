@@ -8,6 +8,7 @@ turns interest into **WhatsApp conversations**. There is deliberately no
 checkout, payment, account or stock system: every journey ends with the
 customer reviewing a prefilled message and sending it to Ghada themselves.
 
+- **Live site:** https://maryam-sheriff.github.io/Gk-atelier-/ (GitHub Pages)
 - **For Ghada / content editors:** see [EDITING-GUIDE.md](EDITING-GUIDE.md)
 - **Before going live:** see [LAUNCH-CHECKLIST.md](LAUNCH-CHECKLIST.md)
 
@@ -217,31 +218,39 @@ WhatsApp requests are intercepted in tests, so nothing leaves the machine.
 
 ## Deploying
 
-The site is static: build it, then publish the `dist/` folder anywhere.
+The site is published with **GitHub Pages** at
+https://maryam-sheriff.github.io/Gk-atelier-/.
 
-**Netlify / Cloudflare Pages / Vercel (recommended, free tiers are enough):**
-connect the repository, then set:
+- `.github/workflows/deploy.yml` builds the site and publishes `dist/` on
+  every push to `main` (and on demand from the **Actions** tab). Each commit,
+  such as a product added on GitHub, is live within a few minutes.
+- The build checks the content files first. If one has a mistake, the
+  workflow fails with a plain message and the previous version stays online.
+- Because the site lives in a sub-folder (`/Gk-atelier-/`), `site.url` in
+  `content/settings.yml` holds the full Pages address, and every link,
+  photo and font is built under that folder.
+- Until the launch checklist is complete, the published site is the
+  **preview**: it shows the Preview bar and is hidden from search engines.
+  Once the number and the Arabic review are in, the same workflow publishes
+  the full, indexable site with nothing else to change.
+- `.github/workflows/test.yml` runs the unit and browser tests on pull
+  requests and on changes to the code (not on content-only edits).
 
-| Setting | Value |
-| --- | --- |
-| Base directory | `gk-atelier` (while it lives in this folder) |
-| Build command | `npm run build:release` |
-| Publish directory | `dist` |
-| Node version | 20 or 22 |
+**One-time setup:** in the repository's **Settings → Pages**, under
+**Build and deployment**, set **Source** to **GitHub Actions**.
 
-Each commit (for example, a product added on GitHub) then republishes the site.
-If a content file has a mistake, the build fails with a clear message and the
-previous version stays online.
+### Custom domain
 
-**GitHub Pages:** run `npm ci && npm run build:release` in a GitHub Actions
-workflow and publish `dist/` with `actions/upload-pages-artifact` and
-`actions/deploy-pages`. If the site is served from a sub-folder
-(`https://user.github.io/gk-atelier/`), put that full address in
-`site.url`, and every link adapts.
+To use a domain such as `www.gkatelier.com` instead:
 
-> This repository currently also hosts another site from its root, so give
-> GK Atelier its own repository (or a host such as Netlify) rather than
-> turning on GitHub Pages here.
+1. Buy the domain, then in **Settings → Pages → Custom domain** enter it
+   and follow GitHub's instructions for the DNS records.
+2. Change `site.url` in `content/settings.yml` to the new address (no
+   sub-folder), for example `https://www.gkatelier.com`. The next build
+   moves every link to the root of the new domain.
+
+The site is plain static files, so it can also be hosted on Netlify or
+Cloudflare Pages (build command `npm run build`, publish directory `dist`).
 
 ## Browser support
 

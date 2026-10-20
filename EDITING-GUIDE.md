@@ -160,9 +160,10 @@ Contact page. Leave a line empty (`""`) to hide that icon.
 
 ## 7. Check your changes
 
-If the site is connected to a host such as Netlify or Cloudflare Pages (see
-README.md), every commit rebuilds and publishes it automatically within a
-minute or two. If something in a file is wrong, the build stops with a plain
+Every commit rebuilds and publishes the site on GitHub Pages
+(https://maryam-sheriff.github.io/Gk-atelier-/) within a few minutes. You can
+follow it in the repository's **Actions** tab: a green tick means it is live.
+If something in a file is wrong, the build stops with a red cross and a plain
 message such as:
 
 ```

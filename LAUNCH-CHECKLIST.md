@@ -15,9 +15,10 @@ at any time.
       Then test it: on a phone *and* on a computer, open a product page, press
       **Order This via WhatsApp**, and check that the chat opens with Ghada and
       the message names the product and links back to it.
-- [ ] **Website address:** `content/settings.yml` → `site.url` (for example
-      `https://www.gkatelier.com`). It is used for product links inside
-      WhatsApp messages, Google and social previews.
+- [x] **Website address:** the site is published on GitHub Pages at
+      https://maryam-sheriff.github.io/Gk-atelier-/ (`site.url` in
+      `content/settings.yml`). If a domain is bought later, see README.md →
+      Custom domain.
 - [x] **Logo:** added (`images/brand/`), with the header monogram, homepage
       and footer versions, browser icon and sharing image cut from it.
 - [x] **Real products:** twenty-eight pieces are on the site and the sample
@@ -76,10 +77,12 @@ at any time.
 
 ## Going live
 
-- [ ] `npm run build:release` completes without errors.
-- [ ] Deploy `dist/` (see README.md → Deploying).
+- [ ] `npm run check` lists nothing left before launch. The next push to
+      `main` then publishes the full site automatically (README.md →
+      Deploying).
 - [ ] Open the live site from Instagram's in-app browser and from WhatsApp
       and test a product enquiry and a custom order enquiry end to end.
 - [ ] Paste the site link into a WhatsApp chat to check the preview card.
-- [ ] Add the site to Google Search Console and submit `/sitemap.xml`.
+- [ ] Add the site to Google Search Console and submit its sitemap
+      (https://maryam-sheriff.github.io/Gk-atelier-/sitemap.xml).
 - [ ] Put the website link in the Instagram bio.

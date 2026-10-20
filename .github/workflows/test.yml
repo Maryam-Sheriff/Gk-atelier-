@@ -1,0 +1,41 @@
+name: Tests
+
+# Runs the full test suite on pull requests and whenever the code changes.
+# Content-only edits (products, photos, text) are checked by the publish
+# workflow's build instead.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'playwright.config.mjs'
+      - '.github/workflows/test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check content
+        run: npm run check
+      - name: Unit and build tests
+        run: npm test
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests (phone + desktop)
+        run: npm run test:e2e

@@ -17,10 +17,11 @@ whatsapp:
   number: ""
 
 site:
-  # The website's full address once a domain is chosen,
-  # e.g. https://www.example.com — used for product links inside WhatsApp
-  # messages, search engines and social sharing. No trailing slash needed.
-  url: ""
+  # The website's full address — used for every link on the site, product
+  # links inside WhatsApp messages, search engines and social sharing.
+  # This is the GitHub Pages address. If a domain is bought later (see
+  # README.md → Custom domain), put it here instead, e.g. https://www.example.com
+  url: "https://maryam-sheriff.github.io/Gk-atelier-"
   # The language visitors see first, at the main address: ar or en.
   # The other language lives under /en/ (or /ar/).
   default_language: ar
