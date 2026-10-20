@@ -1,6 +1,11 @@
+import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { loadContent } from '../../src/lib/content.mjs';
+import { EMPTY_COLLECTION, TMP } from '../fixtures/make-site.mjs';
 
 const PREVIEW = 'http://localhost:4311';
+// The content of the preview test site (built by serve-fixtures.mjs).
+const previewContent = () => loadContent(path.join(TMP, 'e2e-preview'));
 const NUMBER = '201000000000';
 
 // Never leave the test machine: answer WhatsApp requests locally.
@@ -232,15 +237,16 @@ test('keyboard users can skip straight to the content', async ({ page, isMobile 
 
 test.describe('preview without a WhatsApp number', () => {
   test('buttons explain the missing number and show the prepared message', async ({ page }) => {
-    await page.goto(`${PREVIEW}/en/products/macrame-mirror-wall-shelf/`);
+    const product = previewContent().products[0];
+    await page.goto(`${PREVIEW}/en/products/${product.slug}/`);
     await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
     await expect(page.locator('.preview-bar')).toBeVisible();
     await page.locator('[data-product-cta] a').click();
     const dialog = page.locator('#whatsapp-setup');
     await expect(dialog).toBeVisible();
     const message = dialog.locator('[data-wa-setup-message]');
-    await expect(message).toContainText("I'm interested in Macramé Mirror with Shelf");
-    await expect(message).toContainText(`Product link: ${PREVIEW}/en/products/macrame-mirror-wall-shelf/`);
+    await expect(message).toContainText(`I'm interested in ${product.name.en}`);
+    await expect(message).toContainText(`Product link: ${PREVIEW}/en/products/${product.slug}/`);
     await dialog.getByRole('button', { name: 'Close' }).click();
     await expect(dialog).toBeHidden();
   });
@@ -259,23 +265,21 @@ test.describe('preview without a WhatsApp number', () => {
   });
 
   test("Ghada's pieces appear in their collections with their photographs", async ({ page }) => {
-    await page.goto(`${PREVIEW}/en/collections/macrame-home-decor/`);
+    const { collections } = previewContent();
+    const largest = [...collections].sort((a, b) => b.products.length - a.products.length)[0];
+    await page.goto(`${PREVIEW}/en/collections/${largest.slug}/`);
     const cards = page.locator('.card--product');
-    await expect(cards).toHaveCount(7);
+    await expect(cards).toHaveCount(largest.products.length);
     await expect(page.locator('.card--product .badge')).toHaveCount(0);
     for (const img of await cards.locator('img').all()) {
       await img.scrollIntoViewIfNeeded();
       await expect.poll(() => img.evaluate((i) => i.complete && i.naturalWidth > 0)).toBe(true);
     }
-    await page.goto(`${PREVIEW}/collections/baby-newborn/`);
-    await expect(page.locator('.card--product .card__title')).toHaveText([
-      'طقم مواليد مخصّص بالاسم',
-      'طقم مواليد بتطريز الطائرة',
-      'طقم مواليد بالدانتيل والفراشات',
-      'مجموعة هدايا مواليد بقوس قزح',
-    ]);
+    // Arabic names, featured pieces first.
+    await page.goto(`${PREVIEW}/collections/${largest.slug}/`);
+    await expect(page.locator('.card--product .card__title')).toHaveText(largest.products.map((p) => p.name.ar));
     // Collections still waiting for photographs explain themselves.
-    await page.goto(`${PREVIEW}/en/collections/silk-painting/`);
+    await page.goto(`${PREVIEW}/en/collections/${EMPTY_COLLECTION}/`);
     await expect(page.getByRole('heading', { name: 'New pieces are on their way' })).toBeVisible();
   });
 });

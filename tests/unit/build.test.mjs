@@ -4,7 +4,8 @@ import path from 'node:path';
 import test from 'node:test';
 import sharp from 'sharp';
 import { build } from '../../src/build.mjs';
-import { TEST_NUMBER, TEST_URL, copySite, editYaml, makeConfiguredSite, makePreviewSite } from '../fixtures/make-site.mjs';
+import { loadContent } from '../../src/lib/content.mjs';
+import { EMPTY_COLLECTION, TEST_NUMBER, TEST_URL, copySite, editYaml, makeConfiguredSite, makePreviewSite } from '../fixtures/make-site.mjs';
 
 const read = (dir, rel) => fs.readFileSync(path.join(dir, rel), 'utf8');
 const htmlFiles = (dir) => fs.readdirSync(dir, { recursive: true }).filter((f) => f.endsWith('.html')).map(String);
@@ -38,6 +39,9 @@ function brokenLinks(outDir, base = '') {
 
 const preview = await makePreviewSite();
 const configured = await makeConfiguredSite();
+const shipped = loadContent(preview.root);
+const firstProduct = shipped.products[0];
+const cardCount = (page) => (page.match(/class="card card--product"/g) ?? []).length;
 
 test('preview: every page is built in both languages with correct direction', () => {
   const files = htmlFiles(preview.outDir);
@@ -83,29 +87,43 @@ test('preview: kept out of search engines and clearly marked', () => {
     assert.match(page, /<meta name="robots" content="noindex, nofollow">/, file);
     assert.match(page, /class="preview-bar"/, file);
   }
-  const product = read(preview.outDir, 'products/macrame-mirror-wall-shelf/index.html');
-  assert.ok(!product.includes('class="sample-notice"'));
-  assert.ok(!product.includes('"@type":"Product"'), 'no Product data without a confirmed price');
+  for (const p of shipped.products) {
+    const product = read(preview.outDir, `products/${p.slug}/index.html`);
+    assert.ok(!product.includes('class="sample-notice"'), p.slug);
+    assert.equal(product.includes('"@type":"Product"'), Boolean(p.price && !p.price.from), `${p.slug}: Product data only with an exact price`);
+  }
 });
 
-test('preview: real products use the supplied photographs, described in both languages', () => {
-  const ar = read(preview.outDir, 'products/personalized-newborn-set/index.html');
-  assert.match(ar, /<source type="image\/webp" srcset="\/img\/1-[0-9a-f]+-480\.webp 480w, \/img\/1-[0-9a-f]+-800\.webp 800w, \/img\/1-[0-9a-f]+-941\.webp 941w"/);
-  assert.match(ar, /alt="طقم مواليد عاجي مطرّز باسم تالينا/);
-  const en = read(preview.outDir, 'en/products/macrame-doorway-curtain/index.html');
-  assert.match(en, /alt="Long ivory macramé curtain[^"]*" width="1536" height="1024"[^>]*style="object-position: 25% 50%"/);
-  assert.match(en, /<p class="product__price">Price on request<\/p>/);
+test('preview: real products use the supplied photographs, described in both languages', async () => {
+  assert.ok(shipped.products.length > 0, "Ghada's pieces are shown");
+  for (const p of shipped.products) {
+    for (const lang of ['ar', 'en']) {
+      const page = read(preview.outDir, `${lang === 'ar' ? '' : 'en/'}products/${p.slug}/index.html`);
+      const alts = attrValues(page, 'alt');
+      assert.ok(alts.includes(p.images[0].alt[lang]), `${p.slug} (${lang}) shows its first photo with its description`);
+      if (!p.price) assert.ok(page.includes('class="product__price"'), `${p.slug} (${lang}) explains how to ask for the price`);
+    }
+  }
+  // Responsive versions are never wider than the original photo.
+  const first = firstProduct.images[0];
+  const { width } = await sharp(path.join(preview.root, first.src)).metadata();
+  const page = read(preview.outDir, `products/${firstProduct.slug}/index.html`);
+  const widths = page.match(/<source type="image\/webp" srcset="([^"]+)"/)[1].split(', ').map((s) => Number(s.split(' ')[1].slice(0, -1)));
+  assert.equal(Math.max(...widths), Math.min(width, 2000));
+  // A wide photo can keep a chosen side in view.
+  const focused = shipped.products.find((p) => p.images[0].focus);
+  if (focused) assert.match(read(preview.outDir, `products/${focused.slug}/index.html`), /style="object-position: \d+% \d+%"/);
+
   const home = read(preview.outDir, 'en/index.html');
-  assert.equal((home.match(/class="card card--product"/g) ?? []).length, 4, 'four featured pieces on the homepage');
+  assert.equal(cardCount(home), Math.min(4, shipped.products.filter((p) => p.featured).length), 'up to four featured pieces on the homepage');
   assert.ok(!home.includes('Sample listing'));
   const glimpse = home.slice(home.indexOf('class="glimpse"'), home.indexOf('aria-labelledby="ghada-title"'));
-  assert.equal((glimpse.match(/<img /g) ?? []).length, 6, 'the glimpse gallery shows six real photographs');
-  assert.ok(!glimpse.includes('class="ph'), 'no "coming soon" panels left in the glimpse gallery');
-  const macrame = read(preview.outDir, 'en/collections/macrame-home-decor/index.html');
-  assert.equal((macrame.match(/class="card card--product"/g) ?? []).length, 7);
-  assert.match(macrame, /7 pieces/);
-  const wedding = read(preview.outDir, 'en/collections/wedding-bridal/index.html');
-  assert.equal((wedding.match(/class="card card--product"/g) ?? []).length, 9);
+  assert.equal((glimpse.match(/<img /g) ?? []).length, shipped.photos.glimpse.filter((g) => g.image).length, 'every glimpse photo is shown');
+  for (const c of shipped.collections) {
+    const collection = read(preview.outDir, `en/collections/${c.slug}/index.html`);
+    assert.equal(cardCount(collection), c.products.length, c.slug);
+    if (c.products.length > 1) assert.match(collection, new RegExp(`${c.products.length} pieces`), c.slug);
+  }
 });
 
 test('sample listings, when switched on, are clearly marked and kept out of search', async () => {
@@ -123,8 +141,8 @@ test('sample listings, when switched on, are clearly marked and kept out of sear
 });
 
 test('preview: product messages carry a placeholder origin the browser fills in', () => {
-  const page = read(preview.outDir, 'en/products/macrame-mirror-wall-shelf/index.html');
-  assert.ok(page.includes('Product link: __ORIGIN__/en/products/macrame-mirror-wall-shelf/'));
+  const page = read(preview.outDir, `en/products/${firstProduct.slug}/index.html`);
+  assert.ok(page.includes(`Product link: __ORIGIN__/en/products/${firstProduct.slug}/`));
 });
 
 test('preview: all internal links and anchors resolve', () => {
@@ -219,9 +237,9 @@ test('configured: images are responsive, sized and stripped of metadata', async 
 });
 
 test('configured: collections without real pieces show a helpful empty state', () => {
-  const page = read(configured.outDir, 'en/collections/silk-painting/index.html');
+  const page = read(configured.outDir, `en/collections/${EMPTY_COLLECTION}/index.html`);
   assert.match(page, /New pieces are on their way/);
-  assert.match(page, /href="\/en\/custom-orders\/\?type=silk-painting"/);
+  assert.match(page, new RegExp(`href="/en/custom-orders/\\?type=${EMPTY_COLLECTION}"`));
   const wa = attrValues(page, 'href').find((h) => h.includes('wa.me') && decodeURIComponent(h).includes('Silk Painting collection'));
   assert.ok(wa, 'empty state offers a collection enquiry');
 });

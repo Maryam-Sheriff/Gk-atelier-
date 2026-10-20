@@ -24,6 +24,14 @@ export function copySite(name) {
   return root;
 }
 
+/** Removes a collection's pieces from a test copy, so its empty state can be tested. */
+export function keepCollectionEmpty(root, slug) {
+  const dir = path.join(root, 'content/products');
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.yml') && !f.startsWith('_'))) {
+    if (yaml.load(fs.readFileSync(path.join(dir, file), 'utf8'))?.collection === slug) fs.rmSync(path.join(dir, file));
+  }
+}
+
 export function editYaml(root, relative, edit) {
   const file = path.join(root, relative);
   const data = yaml.load(fs.readFileSync(file, 'utf8'));
@@ -38,8 +46,11 @@ async function testImage(file, { width, height, color }) {
     .toFile(file);
 }
 
+export const EMPTY_COLLECTION = 'silk-painting';
+
 export async function makeConfiguredSite(name = 'configured') {
   const root = copySite(name);
+  keepCollectionEmpty(root, EMPTY_COLLECTION);
   editYaml(root, 'content/settings.yml', (s) => {
     s.whatsapp.number = TEST_NUMBER;
     s.site.url = TEST_URL;
@@ -89,8 +100,17 @@ export async function makeConfiguredSite(name = 'configured') {
   return { root, outDir, ...result };
 }
 
+// The real content in its pre-launch state (no number, no address, Arabic
+// not yet reviewed), whatever the real settings say by now.
 export async function makePreviewSite(name = 'preview') {
   const root = copySite(name);
+  editYaml(root, 'content/settings.yml', (s) => {
+    s.whatsapp.number = '';
+    s.site.url = '';
+    s.launch.arabic_reviewed = false;
+    s.launch.show_sample_products = false;
+  });
+  keepCollectionEmpty(root, EMPTY_COLLECTION);
   const outDir = path.join(root, 'dist');
   const result = await build({ root, outDir, log: () => {} });
   return { root, outDir, ...result };

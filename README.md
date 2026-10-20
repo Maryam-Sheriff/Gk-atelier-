@@ -196,7 +196,9 @@ shades of the same hues are used where text must stay readable (WCAG AA).
 ## Testing
 
 `npm test` runs 41 unit and build tests, including full preview and
-configured builds with a link checker over every page.
+configured builds with a link checker over every page. The tests read the
+expected pieces, collections and photos from the content files, so adding,
+removing or reordering products never breaks them.
 
 `npm run test:e2e` builds two sites, the shipped content (preview) and a fully
 configured fixture (test-only number `201000000000` and `example.com`), and
