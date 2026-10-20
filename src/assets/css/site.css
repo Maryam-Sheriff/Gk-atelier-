@@ -569,7 +569,10 @@ ol.fine-list li::before {
   border-radius: 50%;
   background: var(--ink);
   color: var(--on-ink);
-  box-shadow: 0 10px 30px rgba(28, 24, 20, 0.18);
+  /* A fine ivory ring keeps it visible over the dark bands. */
+  box-shadow:
+    0 0 0 1px rgba(243, 238, 231, 0.35),
+    0 10px 30px rgba(28, 24, 20, 0.18);
   transition:
     opacity 0.5s var(--ease),
     transform 0.5s var(--ease),
