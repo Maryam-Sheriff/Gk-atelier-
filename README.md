@@ -8,7 +8,7 @@ turns interest into **WhatsApp conversations**. There is deliberately no
 checkout, payment, account or stock system: every journey ends with the
 customer reviewing a prefilled message and sending it to Ghada themselves.
 
-- **Live site:** https://maryam-sheriff.github.io/Gk-atelier-/ (GitHub Pages)
+- **Live site:** https://gkatelier.online (GitHub Pages)
 - **For Ghada / content editors:** see [EDITING-GUIDE.md](EDITING-GUIDE.md)
 - **Before going live:** see [LAUNCH-CHECKLIST.md](LAUNCH-CHECKLIST.md)
 
@@ -238,17 +238,20 @@ WhatsApp requests are intercepted in tests, so nothing leaves the machine.
 
 ## Deploying
 
-The site is published with **GitHub Pages** at
-https://maryam-sheriff.github.io/Gk-atelier-/.
+The site is published with **GitHub Pages** at https://gkatelier.online.
+The old address, https://maryam-sheriff.github.io/Gk-atelier-/, forwards to
+it.
 
 - `.github/workflows/deploy.yml` builds the site and publishes `dist/` on
   every push to `main` (and on demand from the **Actions** tab). Each commit,
   such as a product added on GitHub, is live within a few minutes.
 - The build checks the content files first. If one has a mistake, the
   workflow fails with a plain message and the previous version stays online.
-- Because the site lives in a sub-folder (`/Gk-atelier-/`), `site.url` in
-  `content/settings.yml` holds the full Pages address, and every link,
-  photo and font is built under that folder.
+- `site.url` in `content/settings.yml` holds the address. Every link,
+  canonical address, sitemap entry and product link inside WhatsApp
+  messages is built from it. (A sub-folder address, such as a plain GitHub
+  Pages one, also works: links, photos and fonts are then built under that
+  folder.)
 - Until the launch checklist is complete, the published site is the
   **preview**: it is hidden from search engines (the pages carry no banner).
   Once the number and the Arabic review are in, the same workflow publishes
@@ -264,13 +267,25 @@ finish and then publishes the real site over it.
 
 ### Custom domain
 
-To use a domain such as `www.gkatelier.com` instead:
+`gkatelier.online` is registered with Namecheap. Its DNS (Namecheap →
+**Domain List** → **Manage** → **Advanced DNS**) points it at GitHub Pages:
 
-1. Buy the domain, then in **Settings → Pages → Custom domain** enter it
-   and follow GitHub's instructions for the DNS records.
-2. Change `site.url` in `content/settings.yml` to the new address (no
-   sub-folder), for example `https://www.gkatelier.com`. The next build
-   moves every link to the root of the new domain.
+| Type | Host | Value |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `maryam-sheriff.github.io.` |
+
+with Namecheap's default parking and redirect records removed. In the
+repository, **Settings → Pages → Custom domain** is `gkatelier.online`, with
+**Enforce HTTPS** ticked. GitHub forwards `www.gkatelier.online` and the old
+github.io address to it.
+
+To move to another domain later: set up its DNS the same way, enter it under
+**Custom domain**, and change `site.url` in `content/settings.yml` in the
+same go, so the links are rebuilt for the new address.
 
 The site is plain static files, so it can also be hosted on Netlify or
 Cloudflare Pages (build command `npm run build`, publish directory `dist`).

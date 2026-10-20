@@ -17,10 +17,9 @@ at any time.
       that the chat opens with Ghada and the message names the product and
       links back to it. Do the same with the project form, once as an
       individual and once as a business.
-- [x] **Website address:** the site is published on GitHub Pages at
-      https://maryam-sheriff.github.io/Gk-atelier-/ (`site.url` in
-      `content/settings.yml`). If a domain is bought later, see README.md →
-      Custom domain.
+- [x] **Website address:** https://gkatelier.online, served by GitHub Pages
+      (`site.url` in `content/settings.yml`; DNS and settings in README.md →
+      Custom domain).
 - [x] **Logo:** added (`images/brand/`), with the header wordmark, menu
       monogram, homepage and footer versions, browser icon and sharing image
       cut from it.
@@ -85,5 +84,5 @@ at any time.
       and test a product enquiry and a custom order enquiry end to end.
 - [ ] Paste the site link into a WhatsApp chat to check the preview card.
 - [ ] Add the site to Google Search Console and submit its sitemap
-      (https://maryam-sheriff.github.io/Gk-atelier-/sitemap.xml).
+      (https://gkatelier.online/sitemap.xml).
 - [ ] Put the website link in the Instagram bio.
