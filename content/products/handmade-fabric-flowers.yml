@@ -2,7 +2,8 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0026
 slug: handmade-fabric-flowers
-collection: embroidery-textile-art
+collection: fabric-flowers-appliques
+featured: true
 name:
   en: Handmade Fabric Flowers
   ar: زهور قماش مصنوعة يدويًا

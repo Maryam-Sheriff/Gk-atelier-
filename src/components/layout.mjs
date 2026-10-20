@@ -1,15 +1,27 @@
 import { attrs, html, raw } from '../lib/html.mjs';
-import { LANGS } from '../lib/i18n.mjs';
+import { LANGS, pick } from '../lib/i18n.mjs';
+import { formatWhatsAppNumber } from '../lib/whatsapp.mjs';
 import { icon } from './icons.mjs';
 import { picture } from './media.mjs';
-import { whatsappButton } from './ui.mjs';
+import { text, whatsappButton } from './ui.mjs';
 
+// The main menu. The spotlighted collection (Ramadan, for example) is
+// added after Collections when one is set in settings.yml.
 const NAV = [
   { key: 'collections', route: '/collections/' },
   { key: 'custom', route: '/custom-orders/' },
   { key: 'about', route: '/about/' },
   { key: 'contact', route: '/contact/' },
 ];
+
+function navItems(ctx) {
+  const items = NAV.map((item) => ({ ...item, label: ctx.t(`nav.${item.key}`) }));
+  const spotlight = ctx.settings.featuredCollection && ctx.collection(ctx.settings.featuredCollection);
+  if (spotlight) {
+    items.splice(1, 0, { key: `collection:${spotlight.slug}`, route: `/collections/${spotlight.slug}/`, label: pick(spotlight.name, ctx.lang) });
+  }
+  return items;
+}
 
 const SOCIAL_LABELS = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok', pinterest: 'Pinterest' };
 
@@ -71,6 +83,9 @@ function brandMark(ctx, { className = 'brand' } = {}) {
   const { brand, t } = ctx;
   if (brand.mark) {
     return html`<a class="${className}" href="${ctx.url('/')}">
+      ${brand.wordmark
+        ? html`<img class="brand__wordmark" src="${brand.wordmark.url}" width="${brand.wordmark.width}" height="${brand.wordmark.height}" alt="${t('meta.site_name')}">`
+        : ''}
       <img class="brand__logo" src="${brand.mark.url}" width="${brand.mark.width}" height="${brand.mark.height}" alt="${t('meta.site_name')}">
     </a>`;
   }
@@ -93,62 +108,101 @@ function languageSwitch(ctx, page, className = 'lang-switch') {
   })}>${icon('globe')}<span lang="${other}">${ctx.t('nav.switch_label')}</span></a>`;
 }
 
+function phoneLink(ctx, className) {
+  const number = ctx.settings.whatsapp;
+  if (!number) return '';
+  return html`<a class="${className}" href="https://wa.me/${number}" target="_blank" rel="noopener" dir="ltr">${icon('whatsapp')}<span>${formatWhatsAppNumber(number)}</span></a>`;
+}
+
 function header(ctx, page) {
-  const { t } = ctx;
+  const { t, content } = ctx;
   const generalMessage = t('whatsapp.messages.general');
-  return html`<header class="site-header">
-  <div class="container site-header__inner">
-    ${brandMark(ctx)}
-    <nav class="site-nav" id="site-nav" aria-label="${t('nav.label')}">
-      <ul class="site-nav__list">
-        ${NAV.map(
-          (item) => html`<li><a${attrs({
-            class: 'site-nav__link',
-            href: ctx.url(item.route),
-            'aria-current': page.section === item.key ? 'page' : null,
-          })}>${t(`nav.${item.key}`)}</a></li>`,
-        )}
-      </ul>
-      <div class="site-nav__extra">
-        ${whatsappButton(ctx, generalMessage, { label: t('whatsapp.order'), variant: 'primary', className: 'btn--block' })}
-      </div>
-    </nav>
+  const items = navItems(ctx);
+  // One "current" item: the spotlighted collection when on its page, otherwise the section.
+  const active = page.navKey && items.some((i) => i.key === page.navKey) ? page.navKey : page.section;
+  const current = (item) => (item.key === active ? 'page' : null);
+  return html`<header class="site-header" data-header>
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <p class="topbar__note">${t('nav.topbar')}</p>
+      ${phoneLink(ctx, 'topbar__phone')}
+    </div>
+  </div>
+  <div class="container masthead">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-label-open="${t('nav.menu')}" data-label-close="${t('nav.close_menu')}">
+      ${icon('menu')}<span class="nav-toggle__label">${t('nav.menu')}</span>
+    </button>
+    ${brandMark(ctx, { className: 'brand masthead__brand' })}
     <div class="site-header__actions">
       ${languageSwitch(ctx, page)}
       ${whatsappButton(ctx, generalMessage, { label: 'WhatsApp', variant: 'secondary', size: 'small', className: 'header-wa' })}
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-label-open="${t('nav.menu')}" data-label-close="${t('nav.close_menu')}">
-        <span class="nav-toggle__icon nav-toggle__icon--open">${icon('menu')}</span>
-        <span class="nav-toggle__icon nav-toggle__icon--close">${icon('close')}</span>
-        <span class="nav-toggle__label">${t('nav.menu')}</span>
-      </button>
     </div>
   </div>
+  <nav class="site-nav" id="site-nav" aria-label="${t('nav.label')}">
+    <div class="site-nav__panel">
+      <div class="site-nav__head">
+        ${ctx.brand.mark ? html`<img class="site-nav__mark" src="${ctx.brand.mark.url}" width="${ctx.brand.mark.width}" height="${ctx.brand.mark.height}" alt="">` : ''}
+        <button class="site-nav__close" type="button" data-nav-close aria-label="${t('nav.close_menu')}">${icon('close')}</button>
+      </div>
+      <ul class="site-nav__list">
+        <li class="site-nav__item site-nav__item--home"><a class="site-nav__link" href="${ctx.url('/')}"${page.section === 'home' ? html` aria-current="page"` : ''}>${t('nav.home')}</a></li>
+        ${items.map(
+          (item) => html`<li class="site-nav__item"><a${attrs({
+            class: 'site-nav__link',
+            href: ctx.url(item.route),
+            'aria-current': current(item),
+          })}>${item.label}</a></li>`,
+        )}
+      </ul>
+      <div class="site-nav__collections">
+        <p class="site-nav__heading">${t('nav.all_collections')}</p>
+        <ul>
+          ${content.collections.map((c) => html`<li><a href="${ctx.url(`/collections/${c.slug}/`)}">${text(c.name, ctx.lang)}</a></li>`)}
+        </ul>
+      </div>
+      <div class="site-nav__extra">
+        ${whatsappButton(ctx, generalMessage, { label: t('whatsapp.order'), variant: 'primary', className: 'btn--block' })}
+        ${phoneLink(ctx, 'site-nav__phone')}
+        ${languageSwitch(ctx, page, 'lang-switch lang-switch--menu')}
+      </div>
+    </div>
+  </nav>
 </header>`;
 }
 
 function footer(ctx, page, floating = '') {
-  const { t, settings, brand } = ctx;
+  const { t, settings, brand, content } = ctx;
   const year = new Date().getFullYear();
   const social = Object.entries(settings.social);
   return html`<footer class="site-footer">
+  <div class="site-footer__trim" aria-hidden="true"></div>
   <div class="container site-footer__grid">
     <div class="site-footer__brand">
       ${brand.lockup
-        ? html`<a class="brand-lockup" href="${ctx.url('/')}">${picture(ctx, brand.lockup, { sizes: '240px', alt: t('meta.site_name') })}</a>`
+        ? html`<a class="brand-lockup" href="${ctx.url('/')}">${picture(ctx, brand.lockup, { sizes: '220px', alt: t('meta.site_name') })}</a>`
         : brandMark(ctx, { className: 'brand brand--footer' })}
       <p class="site-footer__tagline">${t('footer.tagline')}</p>
       <p class="site-footer__service">${t('footer.service')}</p>
     </div>
-    <nav class="site-footer__nav" aria-labelledby="footer-explore">
+    <nav class="site-footer__nav" aria-labelledby="footer-collections">
+      <h2 class="site-footer__heading" id="footer-collections">${t('nav.all_collections')}</h2>
+      <ul>
+        ${content.collections.map((c) => html`<li><a href="${ctx.url(`/collections/${c.slug}/`)}">${text(c.name, ctx.lang)}</a></li>`)}
+      </ul>
+    </nav>
+    <nav class="site-footer__nav site-footer__nav--atelier" aria-labelledby="footer-explore">
       <h2 class="site-footer__heading" id="footer-explore">${t('footer.explore')}</h2>
       <ul>
         <li><a href="${ctx.url('/')}">${t('nav.home')}</a></li>
         ${NAV.map((item) => html`<li><a href="${ctx.url(item.route)}">${t(`nav.${item.key}`)}</a></li>`)}
+        <li><a href="${ctx.url('/privacy/')}">${t('footer.privacy')}</a></li>
       </ul>
     </nav>
     <div class="site-footer__connect">
       <h2 class="site-footer__heading">${t('footer.connect')}</h2>
-      ${whatsappButton(ctx, t('whatsapp.messages.general'), { label: t('whatsapp.order'), variant: 'primary' })}
+      <p class="site-footer__text">${t('footer.connect_text')}</p>
+      ${whatsappButton(ctx, t('whatsapp.messages.general'), { label: t('whatsapp.order'), variant: 'light' })}
+      ${phoneLink(ctx, 'site-footer__phone')}
       ${social.length
         ? html`<ul class="social-links">
             ${social.map(

@@ -20,16 +20,16 @@ test('browse a collection, open a product and start a WhatsApp enquiry', async (
   await page.getByRole('link', { name: 'Explore Our Creations' }).click();
   await expect(page).toHaveURL(/\/en\/collections\/$/);
 
-  await page.getByRole('link', { name: 'Embroidery & Textile Art' }).click();
-  await expect(page).toHaveURL(/\/en\/collections\/embroidery-textile-art\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Embroidery & Textile Art');
+  await page.locator('main').getByRole('link', { name: 'Embroidery & Couture Details' }).click();
+  await expect(page).toHaveURL(/\/en\/collections\/embroidery-couture\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Embroidery & Couture Details');
 
   await page.getByRole('link', { name: 'Test Hoop & "Name"' }).first().click();
   await expect(page).toHaveURL(/\/en\/products\/test-embroidered-hoop\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Test Hoop & "Name"');
 
   const cta = page.locator('[data-product-cta] a');
-  await expect(cta).toHaveText('Order This via WhatsApp');
+  await expect(cta).toHaveText('Enquire on WhatsApp');
   await expect(cta).toHaveAttribute('target', '_blank');
   const [popup] = await Promise.all([page.waitForEvent('popup'), cta.click()]);
   expect(popup.url().startsWith(`https://wa.me/${NUMBER}?text=`)).toBe(true);
@@ -63,7 +63,7 @@ test('switching language keeps the page, mirrors the layout and is remembered', 
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('طارة اختبار');
-  await expect(page.locator('[data-product-cta] a')).toHaveText('اطلبوا هذه القطعة عبر واتساب');
+  await expect(page.locator('[data-product-cta] a')).toHaveText('استفسروا عبر واتساب');
   const arText = waText(await page.locator('[data-product-cta] a').getAttribute('href'));
   expect(arText).toMatch(/^مرحبًا غادة!/);
   expect(arText).toContain('https://www.example.com/products/test-embroidered-hoop/');
@@ -84,9 +84,11 @@ test('switching language keeps the page, mirrors the layout and is remembered', 
   await expect(page).toHaveURL('http://localhost:4310/en/contact/');
 });
 
-test('custom order enquiry validates, then opens WhatsApp with the details', async ({ page }) => {
-  await page.goto('/en/custom-orders/?type=silk-painting');
-  await expect(page.locator('#f-type')).toHaveValue('silk-painting');
+test('project enquiry validates, then opens WhatsApp with the details', async ({ page }) => {
+  await page.goto('/en/custom-orders/?type=paintings');
+  await expect(page.locator('#f-type')).toHaveValue('paintings');
+  // The business name is only asked for professional orders.
+  await expect(page.locator('#f-business')).toBeHidden();
 
   const submit = page.getByRole('button', { name: 'Continue to WhatsApp' });
   await submit.click();
@@ -94,18 +96,21 @@ test('custom order enquiry validates, then opens WhatsApp with the details', asy
   await expect(summary).toBeVisible();
   await expect(summary).toBeFocused();
   await expect(summary.locator('li')).toHaveText([
+    "Please choose whether you're enquiring as an individual or a business.",
     'Please enter your name.',
-    'Please choose an occasion or purpose.',
-    'Please describe the piece in a few words (at least 10 characters).',
+    'Please enter a phone number or email address.',
+    'Please describe the work in a few words (at least 10 characters).',
   ]);
   await expect(page.locator('#f-name')).toHaveAttribute('aria-invalid', 'true');
   await expect(page.locator('#name-error')).toHaveText('Please enter your name.');
 
+  await page.getByLabel('An individual').check();
   await page.fill('#f-name', 'Test Customer');
   await expect(page.locator('#f-name')).not.toHaveAttribute('aria-invalid', 'true');
-  await page.selectOption('#f-occasion', { label: 'Wedding or engagement' });
+  await page.fill('#f-contact', '+20 100 000 0000');
   await page.fill('#f-description', 'A small piece with our names & the date.');
-  await page.fill('#f-personalization', 'Ivory and gold');
+  await page.fill('#f-quantity', '2 pieces');
+  await page.fill('#f-details', 'Ivory and gold');
   await page.fill('#f-date', '2000-01-01');
   await submit.click();
   await expect(summary.locator('li')).toHaveText(['Please choose a date that is today or later.']);
@@ -119,16 +124,17 @@ test('custom order enquiry validates, then opens WhatsApp with the details', asy
   expect(popup.url().startsWith(`https://wa.me/${NUMBER}?text=`)).toBe(true);
   expect(text).toBe(
     [
-      "Hello Ghada! I'd like to enquire about a custom piece from GK Atelier.",
+      "Hello Ghada! I'd like to discuss a custom project with GK Atelier.",
       '',
       'Name: Test Customer',
-      'Occasion: Wedding or engagement',
-      'Type of creation: Silk Painting',
+      'Contact: +20 100 000 0000',
+      'Project type: Paintings',
       'Description: A small piece with our names & the date.',
-      'Colours / personalization: Ivory and gold',
-      `Needed by: 14 March ${next.getFullYear()}`,
+      'Estimated quantity: 2 pieces',
+      `Required date: 14 March ${next.getFullYear()}`,
+      'Preferred materials or details: Ivory and gold',
       '',
-      'I understand this is an enquiry, not a confirmed order.',
+      'Could we discuss the feasibility, pricing, and production timeline?',
     ].join('\n'),
   );
 
@@ -142,18 +148,49 @@ test('custom order enquiry validates, then opens WhatsApp with the details', asy
   await expect(page.locator('#f-name')).toHaveValue('Test Customer');
 });
 
+test('professional orders use the business message', async ({ page }) => {
+  await page.goto('/en/custom-orders/');
+  await page.getByLabel('A business, atelier or designer').check();
+  await expect(page.locator('#f-business')).toBeVisible();
+  await page.fill('#f-name', 'Test Buyer');
+  await page.fill('#f-contact', 'buyer@example.com');
+  await page.selectOption('#f-type', 'fabric-flowers-appliques');
+  await page.fill('#f-description', 'Fabric flowers for an evening gown collection.');
+  await page.fill('#f-quantity', '200');
+  const submit = page.getByRole('button', { name: 'Continue to WhatsApp' });
+  await submit.click();
+  await expect(page.locator('[data-error-summary] li')).toHaveText(['Please enter the name of your business or atelier.']);
+  await page.fill('#f-business', 'Test Atelier');
+  const [popup] = await Promise.all([page.waitForEvent('popup'), submit.click()]);
+  expect(waText(popup.url())).toBe(
+    [
+      "Hello Ghada! I'm contacting GK Atelier about a professional order.",
+      '',
+      'Name: Test Buyer',
+      'Contact: buyer@example.com',
+      'Business or atelier: Test Atelier',
+      'Project type: Fabric Flowers & Appliqués',
+      'Project: Fabric flowers for an evening gown collection.',
+      'Required quantity: 200',
+      '',
+      "I'd like to discuss production options, pricing, and lead times.",
+    ].join('\n'),
+  );
+});
+
 test('Arabic enquiry messages are written in Arabic', async ({ page }) => {
   await page.goto('/custom-orders/');
+  await page.getByLabel('فردًا').check();
   await page.fill('#f-name', 'عميل اختبار');
-  await page.selectOption('#f-occasion', { label: 'مولود جديد' });
+  await page.fill('#f-contact', '01000000000');
   await page.selectOption('#f-type', 'baby-newborn');
   await page.fill('#f-description', 'طقم بسيط بألوان هادئة للمولود.');
   const [popup] = await Promise.all([page.waitForEvent('popup'), page.getByRole('button', { name: 'المتابعة إلى واتساب' }).click()]);
   const text = waText(popup.url());
-  expect(text).toContain('مرحبًا غادة! أودّ الاستفسار عن قطعة مخصّصة من GK Atelier.');
+  expect(text).toContain('مرحبًا غادة! أودّ مناقشة مشروع خاص مع GK Atelier.');
   expect(text).toContain('الاسم: عميل اختبار');
-  expect(text).toContain('نوع القطعة: أطقم وهدايا المواليد');
-  expect(text.endsWith('أعلم أن هذا استفسار وليس طلبًا مؤكدًا.')).toBe(true);
+  expect(text).toContain('نوع المشروع: أطقم وهدايا المواليد');
+  expect(text.endsWith('هل يمكننا مناقشة إمكانية التنفيذ والسعر والمدة المتوقعة للإنتاج؟')).toBe(true);
 });
 
 test('product gallery thumbnails and enlarged view work', async ({ page, isMobile }) => {
@@ -184,7 +221,7 @@ test('the order bar appears on phones once the main button scrolls away', async 
   await expect(bar).not.toHaveClass(/is-visible/);
   await page.locator('.site-footer').scrollIntoViewIfNeeded();
   await expect(bar).toHaveClass(/is-visible/);
-  await expect(bar.getByRole('link', { name: 'Order This via WhatsApp' })).toBeVisible();
+  await expect(bar.getByRole('link', { name: 'Enquire on WhatsApp' })).toBeVisible();
   // The footer is padded so the bar never hides its last line.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect(bar).toHaveClass(/is-visible/);
@@ -253,14 +290,15 @@ test.describe('preview without a WhatsApp number', () => {
 
   test('the custom form still validates and previews the message', async ({ page }) => {
     await page.goto(`${PREVIEW}/en/custom-orders/`);
+    await page.getByLabel('An individual').check();
     await page.fill('#f-name', 'Preview Visitor');
-    await page.selectOption('#f-occasion', { label: 'Birthday' });
-    await page.selectOption('#f-type', 'unsure');
+    await page.fill('#f-contact', 'visitor@example.com');
+    await page.selectOption('#f-type', 'other');
     await page.fill('#f-description', 'Something soft and handmade for a birthday.');
     await page.getByRole('button', { name: 'Continue to WhatsApp' }).click();
     const dialog = page.locator('#whatsapp-setup');
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator('[data-wa-setup-message]')).toContainText('Type of creation: Not sure yet');
+    await expect(dialog.locator('[data-wa-setup-message]')).toContainText('Project type: Other / not sure yet');
     await expect(page.locator('[data-enquiry-success]')).toBeHidden();
   });
 

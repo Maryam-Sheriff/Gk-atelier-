@@ -10,10 +10,10 @@ const messages = (list) => list.map((i) => `${i.file}: ${i.message}`).join('\n')
 test('the real content loads without errors', () => {
   const content = loadContent(PROJECT);
   assert.equal(content.report.errors.length, 0, messages(content.report.errors));
-  assert.equal(content.collections.length, 7);
+  assert.equal(content.collections.length, 9);
   assert.deepEqual(
     content.collections.map((c) => c.slug),
-    ['wedding-bridal', 'embroidery-textile-art', 'macrame-home-decor', 'baby-newborn', 'silk-painting', 'crochet-teriko', 'personalized-gifts'],
+    ['wedding-bridal', 'embroidery-couture', 'fabric-flowers-appliques', 'macrame-decor', 'ramadan', 'baby-newborn', 'paintings', 'crochet-teriko', 'personalized-gifts'],
   );
   for (const c of content.collections) {
     assert.ok(c.name.en && c.name.ar && c.short.en && c.short.ar && c.intro.en && c.intro.ar, c.slug);

@@ -2,7 +2,8 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0025
 slug: jewel-embellished-black-dress
-collection: embroidery-textile-art
+collection: embroidery-couture
+featured: true
 name:
   en: Jewel-Embellished Black Dress
   ar: فستان أسود مزيّن بالأحجار الملوّنة

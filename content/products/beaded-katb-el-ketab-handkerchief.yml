@@ -1,0 +1,30 @@
+# Only what the photo shows is written here. Ghada can add confirmed details
+# (price, size, production time, availability) using the fields in _TEMPLATE.yml.
+id: GK-0006
+slug: beaded-katb-el-ketab-handkerchief
+collection: wedding-bridal
+featured: true
+name:
+  en: Beaded Katb El-Ketab Handkerchief
+  ar: منديل كتب كتاب مطرّز بالخرز
+description:
+  en: >-
+    A katb el-ketab handkerchief for the marriage-contract ceremony, with the
+    Bismillah, the couple's names and the date inside a wreath of leaves, all
+    worked in shimmering beads. It is edged in lace and shown presented in a
+    gift box with a gold pen for signing and a white rose.
+  ar: >-
+    منديل كتب كتاب لحفل عقد القران، يحمل البسملة واسمَي العروسين والتاريخ داخل
+    إكليل من الأوراق، وكلها مشغولة بالخرز اللامع. أطرافه مزيّنة بالدانتيل، ويظهر
+    في الصورة داخل علبة هدية مع قلم ذهبي للتوقيع ووردة بيضاء.
+images:
+  - src: images/products/beaded-katb-el-ketab-handkerchief/1.jpg
+    alt:
+      en: Ivory katb el-ketab handkerchief with a beaded leaf wreath, the Bismillah, a couple's names and the date, in a gift box with a gold pen and a white rose
+      ar: منديل كتب كتاب عاجي بإكليل أوراق من الخرز والبسملة وأسماء العروسين والتاريخ، داخل علبة هدية مع قلم ذهبي ووردة بيضاء
+techniques:
+  en: Hand beadwork
+  ar: شغل خرز يدوي
+customization:
+  en: Worked with the couple's names and date
+  ar: مشغول باسمَي العروسين والتاريخ

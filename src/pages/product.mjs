@@ -188,6 +188,7 @@ ${lightbox(ctx, product)}`;
     name: 'product',
     route,
     section: 'collections',
+    navKey: `collection:${collection.slug}`,
     title: `${t('product.title', { product: name, collection: collectionName })} | ${t('meta.title_suffix')}`,
     description: pick(product.description, ctx.lang),
     shareImage: product.images[0] ? ctx.shareImage(product.images[0].src) : null,

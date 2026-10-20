@@ -14,7 +14,7 @@ whatsapp:
   #          (a number written locally as 01XX XXX XXXX becomes 201XXXXXXXXX)
   # Until this is filled in, every WhatsApp button shows a "not set up yet"
   # notice instead of a link, and the release build refuses to run.
-  number: ""
+  number: "201067112862"
 
 site:
   # The website's full address — used for every link on the site, product
@@ -40,6 +40,12 @@ brand:
   # 1200 × 630 image shown when a page is shared on WhatsApp, Instagram,
   # Facebook, etc. Product pages use the product's own photo instead.
   share_image: images/brand/gk-atelier-share.jpg
+
+homepage:
+  # A collection to spotlight in its own band on the homepage (copy its slug
+  # from collections.yml), e.g. ramadan before and during the holy month.
+  # Leave empty ("") to hide the band.
+  featured_collection: ramadan
 
 social:
   # Full links to Ghada's real accounts. Leave empty ("") to hide an icon.

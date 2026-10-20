@@ -53,11 +53,12 @@ export function priceText(ctx, price) {
   return price.from ? ctx.t('product.price_from', { price: formatted }) : formatted;
 }
 
-export function collectionCard(ctx, collection, { headingLevel = 3, sizes, linkLabel } = {}) {
+export function collectionCard(ctx, collection, { headingLevel = 3, sizes, linkLabel, index } = {}) {
   const tag = `h${headingLevel}`;
   const name = pick(collection.name, ctx.lang);
   return html`<article class="card card--collection">
     <div class="card__media">
+      ${index ? html`<span class="card__index" aria-hidden="true">${decorativeNumber(index, ctx.lang)}</span>` : ''}
       ${picture(ctx, collection.image, {
         sizes: sizes ?? '(min-width: 1100px) 30vw, (min-width: 700px) 45vw, 50vw',
         alt: name,

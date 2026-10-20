@@ -20,9 +20,9 @@ id: GK-0000
 slug: example-product
 
 # Which collection it belongs to — copy the slug from content/collections.yml:
-# wedding-bridal, embroidery-textile-art, macrame-home-decor, baby-newborn,
-# silk-painting, crochet-teriko, personalized-gifts
-collection: embroidery-textile-art
+# wedding-bridal, embroidery-couture, fabric-flowers-appliques, macrame-decor,
+# ramadan, baby-newborn, paintings, crochet-teriko, personalized-gifts
+collection: embroidery-couture
 
 # true = also show this piece on the homepage and at the top of its collection.
 featured: false
@@ -60,25 +60,30 @@ price:
 # OPTIONAL details — keep only the ones Ghada has confirmed.
 materials:
   en: e.g. Cotton fabric, embroidery thread, wooden hoop
-  ar: مثال: قماش قطني، خيوط تطريز، طارة خشبية
+  ar: "مثال: قماش قطني، خيوط تطريز، طارة خشبية"
 techniques:
   en: e.g. Hand embroidery
-  ar: مثال: تطريز يدوي
+  ar: "مثال: تطريز يدوي"
 dimensions:
   en: e.g. 20 cm diameter
-  ar: مثال: قطر ٢٠ سم
+  ar: "مثال: قطر ٢٠ سم"
 colours:
   en: e.g. Ivory, blush and gold thread — other colours on request
-  ar: مثال: خيوط عاجية ووردية وذهبية — وألوان أخرى عند الطلب
+  ar: "مثال: خيوط عاجية ووردية وذهبية — وألوان أخرى عند الطلب"
 sizes:
   en: e.g. 15 cm, 20 cm or 25 cm
-  ar: مثال: ١٥ أو ٢٠ أو ٢٥ سم
+  ar: "مثال: ١٥ أو ٢٠ أو ٢٥ سم"
 customization:
   en: e.g. Any name and date, in English or Arabic
-  ar: مثال: أي اسم وتاريخ، بالعربية أو الإنجليزية
+  ar: "مثال: أي اسم وتاريخ، بالعربية أو الإنجليزية"
 production_time:
   en: e.g. About 7–10 days
-  ar: مثال: حوالي ٧ إلى ١٠ أيام
+  ar: "مثال: حوالي ٧ إلى ١٠ أيام"
+
+# OPTIONAL — only if Ghada sets a minimum for this piece
+minimum_order:
+  en: e.g. From 50 pieces
+  ar: "مثال: من ٥٠ قطعة"
 
 # OPTIONAL — one of: made-to-order, available, unavailable
 availability: made-to-order

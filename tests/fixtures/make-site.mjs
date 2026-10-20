@@ -46,7 +46,7 @@ async function testImage(file, { width, height, color }) {
     .toFile(file);
 }
 
-export const EMPTY_COLLECTION = 'silk-painting';
+export const EMPTY_COLLECTION = 'paintings';
 
 export async function makeConfiguredSite(name = 'configured') {
   const root = copySite(name);
@@ -69,7 +69,7 @@ export async function makeConfiguredSite(name = 'configured') {
   const product = {
     id: 'TEST-001',
     slug: 'test-embroidered-hoop',
-    collection: 'embroidery-textile-art',
+    collection: 'embroidery-couture',
     featured: true,
     name: { en: 'Test Hoop & "Name"', ar: 'طارة اختبار' },
     description: { en: 'First paragraph for testing.\nSecond paragraph for testing.', ar: 'وصف اختبار.' },
@@ -88,7 +88,7 @@ export async function makeConfiguredSite(name = 'configured') {
   const second = {
     id: 'TEST-002',
     slug: 'test-from-price',
-    collection: 'embroidery-textile-art',
+    collection: 'embroidery-couture',
     name: { en: 'Test From Price', ar: 'سعر يبدأ من' },
     description: { en: 'A piece with a starting price.', ar: 'قطعة بسعر يبدأ من.' },
     price: { amount: 900, currency: 'SAR', from: true },

@@ -2,8 +2,7 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0004
 slug: macrame-doorway-curtain
-collection: macrame-home-decor
-featured: false
+collection: macrame-decor
 name:
   en: Macramé Doorway Curtain
   ar: ستارة مكرمية للمدخل

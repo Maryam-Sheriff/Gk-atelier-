@@ -10,13 +10,29 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # The large photograph at the top of the homepage. A portrait (tall) photo of
-# a finished piece or a beautiful detail works best. While this is empty, the
-# homepage opens with the logo instead.
+# a finished piece or a beautiful detail works best. Any photo in images/ can
+# be used, including a product photo. While this is empty, the homepage opens
+# with the logo instead.
 hero:
-  src: ""
+  src: images/products/golden-wreath-katb-el-ketab-handkerchief/1.jpg
   alt:
-    en: ""
-    ar: ""
+    en: Katb el-ketab handkerchief with names and a wreath of leaves and flowers worked in gold beads and pearls
+    ar: منديل كتب كتاب عليه أسماء وإكليل من الأوراق والزهور مشغول بالخرز الذهبي واللؤلؤ
+
+# A second, smaller photograph shown beside the large one (optional).
+hero_detail:
+  src: images/products/jewel-embellished-black-dress/1.jpg
+  alt:
+    en: Black dress on a dress form, embellished with jewelled motifs in coloured stones
+    ar: فستان أسود على مانيكان مزيّن بتصاميم من الأحجار الملوّنة
+
+# The photograph beside "Made for your vision" (custom and professional
+# projects) on the homepage.
+custom:
+  src: images/products/personalized-embroidery-hoops/1.jpg
+  alt:
+    en: Hand-embroidered hoops with names, flowers and little illustrations, each finished with a ribbon bow
+    ar: طارات مطرّزة يدويًا بالأسماء والزهور والرسومات الصغيرة، تزيّن كلًّا منها فيونكة من الشريط
 
 # A photograph of Ghada, ideally at work. Used on the homepage and About page.
 ghada:
@@ -28,10 +44,10 @@ ghada:
 # "A glimpse into the atelier" on the homepage — 6 photographs work best:
 # a mix of finished pieces and close-ups of stitching, threads and textures.
 glimpse:
-  - src: images/products/wedding-calendar-cushion/1.jpg
+  - src: images/products/katb-el-ketab-calendar-handkerchief/1.jpg
     alt:
-      en: Embroidered wedding cushion with a bride and groom under a floral arch, the gown in tulle and lace
-      ar: مخدة زفاف مطرّزة بعروسين تحت قوس من الورود، والفستان من التول والدانتيل
+      en: Embroidered katb el-ketab handkerchief with a bride and groom under a floral arch, the gown in tulle and lace
+      ar: منديل كتب كتاب مطرّز بعروسين تحت قوس من الورود، والفستان من التول والدانتيل
   - src: images/products/embroidered-name-mini-hoop/1.jpg
     alt:
       en: Mini embroidery hoop with a name in pink letters and small flowers

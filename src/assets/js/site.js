@@ -35,13 +35,15 @@
     }
   });
 
-  /* Mobile menu. */
+  /* Mobile menu: a full-screen panel with its own close button. */
   (function menu() {
     var toggle = $('.nav-toggle');
     var nav = $('#site-nav');
     if (!toggle || !nav) return;
     var label = $('.nav-toggle__label', toggle);
-    var outside = [$('main'), $('.site-footer'), $('.btn--float')].filter(Boolean);
+    var close = $('[data-nav-close]', nav);
+    var outside = [$('main'), $('.site-footer'), $('.btn--float'), $('.topbar'), $('.masthead')].filter(Boolean);
+    var desktop = window.matchMedia('(min-width: 960px)');
 
     function setOpen(open) {
       toggle.setAttribute('aria-expanded', String(open));
@@ -51,7 +53,7 @@
         el.inert = open;
       });
       if (open) {
-        var first = $('a', nav);
+        var first = $('.site-nav__link', nav);
         if (first) first.focus();
       }
     }
@@ -59,6 +61,12 @@
     toggle.addEventListener('click', function () {
       setOpen(toggle.getAttribute('aria-expanded') !== 'true');
     });
+    if (close) {
+      close.addEventListener('click', function () {
+        setOpen(false);
+        toggle.focus();
+      });
+    }
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
         setOpen(false);
@@ -68,9 +76,31 @@
     nav.addEventListener('click', function (event) {
       if (event.target.closest('a')) setOpen(false);
     });
-    window.matchMedia('(min-width: 960px)').addEventListener('change', function (mq) {
+    desktop.addEventListener('change', function (mq) {
       if (mq.matches) setOpen(false);
     });
+  })();
+
+  /* The header gains a soft shadow once the page scrolls under it. */
+  (function headerShadow() {
+    var header = $('[data-header]');
+    if (!header) return;
+    var queued = false;
+    function update() {
+      queued = false;
+      document.body.classList.toggle('is-scrolled', window.scrollY > 8);
+    }
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (!queued) {
+          queued = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
   })();
 
   /* Preview only: explain that WhatsApp isn't connected yet and show the message. */
@@ -190,7 +220,7 @@
     });
   })();
 
-  /* Custom order enquiry: validate, then hand the details to WhatsApp. */
+  /* Project enquiry: validate, then hand the details to WhatsApp. */
   (function enquiry() {
     var form = $('[data-enquiry-form]');
     var configEl = $('#enquiry-config');
@@ -202,9 +232,12 @@
     var preview = $('[data-message-preview]');
     var successLink = $('[data-success-link]');
     var fields = form.elements;
+    var businessField = $('[data-field="business"]', form);
     var locale = config.lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB';
+    var checked = ['customer', 'name', 'contact', 'business', 'type', 'description', 'date'];
 
     form.noValidate = true;
+    form.classList.add('is-enhanced');
 
     var now = new Date();
     var today = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
@@ -219,33 +252,51 @@
     function value(name) {
       return (fields[name].value || '').trim();
     }
+    function customer() {
+      var picked = $('input[name="customer"]:checked', form);
+      return picked ? picked.value : '';
+    }
+
+    // The business name is only asked for professional orders.
+    function updateCustomer() {
+      var business = customer() === 'business';
+      businessField.hidden = !business;
+      fields.business.required = business;
+    }
+    $$('input[name="customer"]', form).forEach(function (radio) {
+      radio.addEventListener('change', updateCustomer);
+    });
+    updateCustomer();
 
     function check() {
       var errors = [];
+      if (!customer()) errors.push(['customer', config.errors.customer]);
       if (!value('name')) errors.push(['name', config.errors.name]);
-      if (!value('occasion')) errors.push(['occasion', config.errors.occasion]);
+      if (value('contact').length < 5) errors.push(['contact', config.errors.contact]);
+      if (customer() === 'business' && !value('business')) errors.push(['business', config.errors.business]);
       if (!value('type')) errors.push(['type', config.errors.type]);
       if (value('description').length < 10) errors.push(['description', config.errors.description]);
       if (value('date') && value('date') < today) errors.push(['date', config.errors.date]);
       return errors;
     }
 
+    function input(name) {
+      return name === 'customer' ? $('input[name="customer"]', form) : fields[name];
+    }
+
     function setFieldError(name, message) {
-      var input = fields[name];
       var error = $('[data-error-for="' + name + '"]', form);
-      if (message) {
-        input.setAttribute('aria-invalid', 'true');
-        error.textContent = message;
-        error.hidden = false;
-      } else {
-        input.removeAttribute('aria-invalid');
-        error.textContent = '';
-        error.hidden = true;
-      }
+      var targets = name === 'customer' ? $$('input[name="customer"]', form) : [fields[name]];
+      targets.forEach(function (el) {
+        if (message) el.setAttribute('aria-invalid', 'true');
+        else el.removeAttribute('aria-invalid');
+      });
+      error.textContent = message || '';
+      error.hidden = !message;
     }
 
     function showErrors(errors) {
-      ['name', 'occasion', 'type', 'description', 'date'].forEach(function (name) {
+      checked.forEach(function (name) {
         setFieldError(name, null);
       });
       errorList.textContent = '';
@@ -257,7 +308,7 @@
         a.textContent = pair[1];
         a.addEventListener('click', function (event) {
           event.preventDefault();
-          fields[pair[0]].focus();
+          input(pair[0]).focus();
         });
         li.appendChild(a);
         errorList.appendChild(li);
@@ -267,28 +318,37 @@
     }
 
     // Once a field has been flagged, re-check it as the customer corrects it.
-    form.addEventListener('input', function (event) {
+    function recheck(event) {
       var name = event.target.name;
-      if (!name || event.target.getAttribute('aria-invalid') !== 'true') return;
+      if (!name || checked.indexOf(name) < 0 || event.target.getAttribute('aria-invalid') !== 'true') return;
       var stillWrong = check().filter(function (pair) { return pair[0] === name; })[0];
       setFieldError(name, stillWrong ? stillWrong[1] : null);
-    });
+    }
+    form.addEventListener('input', recheck);
+    form.addEventListener('change', recheck);
 
     function formatDate(iso) {
       var parts = iso.split('-').map(Number);
       return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
+    // Individuals and professional orders each have their own message.
     function message() {
-      var labels = config.labels;
-      var lines = [config.intro, ''];
-      lines.push(labels.name + ': ' + value('name'));
-      lines.push(labels.occasion + ': ' + value('occasion'));
-      lines.push(labels.type + ': ' + fields.type.options[fields.type.selectedIndex].text);
-      lines.push(labels.description + ': ' + value('description'));
-      if (value('personalization')) lines.push(labels.personalization + ': ' + value('personalization'));
-      if (value('date')) lines.push(labels.date + ': ' + formatDate(value('date')));
-      lines.push('', config.outro);
+      var template = config.templates[customer()] || config.templates.individual;
+      var labels = template.labels;
+      var lines = [template.intro, ''];
+      function add(label, text) {
+        if (text) lines.push(label + ': ' + text);
+      }
+      add(labels.name, value('name'));
+      add(labels.contact, value('contact'));
+      if (customer() === 'business') add(labels.business, value('business'));
+      add(labels.type, fields.type.options[fields.type.selectedIndex].text);
+      add(labels.description, value('description'));
+      add(labels.quantity, value('quantity'));
+      if (value('date')) add(labels.date, formatDate(value('date')));
+      add(labels.details, value('details'));
+      lines.push('', template.outro);
       return lines.join('\n');
     }
 

@@ -22,13 +22,14 @@ press the pencil icon (✏️ **Edit**), make the change, then press
 
 ## 1. Add or change the WhatsApp number
 
-Open `content/settings.yml` and fill in the number:
+Ghada's number is already in `content/settings.yml`:
 
 ```yaml
 whatsapp:
-  number: "201XXXXXXXXX"
+  number: "201067112862"
 ```
 
+To change it, replace it with the new number in the same format.
 Write it in international format with **digits only**: the country code, then
 the number without its first zero, with no `+` and no spaces. For an Egyptian
 mobile written locally as `01X XXXX XXXX`, that means `20` followed by the 10
@@ -86,6 +87,11 @@ Some things to know:
 - `featured: true` also shows the piece on the homepage (up to four pieces)
   and puts it first in its collection. The other pieces follow in
   alphabetical order of their file names.
+- `collection:` is one of: `wedding-bridal`, `embroidery-couture`,
+  `fabric-flowers-appliques`, `macrame-decor`, `ramadan`, `baby-newborn`,
+  `paintings`, `crochet-teriko`, `personalized-gifts`.
+- For professional orders, `minimum_order:` can state a minimum quantity —
+  only once Ghada has set one.
 - Write a short description of each photo after `alt:`. It is read aloud to
   blind visitors and helps the piece appear in Google.
 
@@ -109,10 +115,11 @@ whole photo.
 ## 4. Photographs for the homepage, collections and About page
 
 - **Homepage and About page:** upload photos to `images/atelier/` and write
-  their paths in `content/photos.yml`: the big homepage photo (`hero`), Ghada's
-  portrait (`ghada`), six photos for "A glimpse into the atelier" (`glimpse`),
-  and three for the About page (`process`: workspace, tools, a piece in
-  progress).
+  their paths in `content/photos.yml`: the big arched homepage photo (`hero`)
+  and the small one beside it (`hero_detail`), the photo next to "Made for
+  your vision" (`custom`), Ghada's portrait (`ghada`), six photos for "A
+  glimpse into the atelier" (`glimpse`), and photos of the workspace,
+  materials and team for the About page (`process`).
 - **Collection covers:** upload to `images/collections/` and write the path
   under that collection's `image:` in `content/collections.yml`.
 - **Reusing product photos:** any photo already in `images/products/` can be
@@ -145,12 +152,25 @@ becomes the product name in WhatsApp messages).
 
 Collection names and descriptions are in `content/collections.yml`.
 
-**"You're welcome to ask about"** (`custom_options` in both copy files) lists
-what customers can enquire about. Keep only the options Ghada is happy to
-offer.
+**"Made for your vision"** (`home → vision_items`) and the two audiences on
+the Custom Projects page (`custom → audiences`) list what the atelier offers.
+Keep only what Ghada is happy to offer.
 
-**Ghada's own words** for the About page go under `about → story` in both copy
-files. That section stays hidden until it has text.
+**Ghada's biography** is under `about → bio` in both copy files, one
+paragraph per item.
+
+## The homepage spotlight (Ramadan)
+
+One collection can have its own band on the homepage and in the menu. It is
+set in `content/settings.yml`:
+
+```yaml
+homepage:
+  featured_collection: ramadan
+```
+
+Write another collection's name (for example `wedding-bridal`) to spotlight
+it instead, or `""` to hide the band.
 
 ## 6. Instagram and other links
 

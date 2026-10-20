@@ -2,7 +2,7 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0012
 slug: abstract-gold-textured-painting
-collection: macrame-home-decor
+collection: paintings
 name:
   en: Abstract Gold Textured Painting
   ar: لوحة تجريدية بملمس ذهبي

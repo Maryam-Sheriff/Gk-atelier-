@@ -1,0 +1,30 @@
+# Only what the photo shows is written here. Ghada can add confirmed details
+# (price, size, production time, availability) using the fields in _TEMPLATE.yml.
+id: GK-0003
+slug: teddy-bear-baby-set
+collection: baby-newborn
+name:
+  en: Teddy Bear Baby Set
+  ar: طقم بيبي بتطريز الدبدوب
+description:
+  en: >-
+    A baby set embroidered by hand with the baby's name and a little teddy
+    bear in a basket, framed by a wreath of leaves and blue flowers. The
+    photograph shows the bodysuit from the set.
+  ar: >-
+    طقم بيبي مطرّز يدويًا باسم الطفل ودبدوب صغير داخل سلة، يحيط به إكليل من
+    الأوراق والزهور الزرقاء. تُظهر الصورة البودي من الطقم.
+images:
+  - src: images/products/teddy-bear-baby-set/1.jpg
+    alt:
+      en: Ivory baby bodysuit from a set, embroidered with a baby's name in Arabic above a teddy bear in a basket, framed by brown leaves and blue flowers
+      ar: بودي عاجي من طقم بيبي، مطرّز باسم الطفل فوق دبدوب في سلة، يحيط به أوراق بنية وزهور زرقاء
+techniques:
+  en: Hand embroidery
+  ar: تطريز يدوي
+colours:
+  en: "As shown: ivory with caramel, brown and soft blue"
+  ar: "كما في الصورة: عاجي مع درجات الكراميل والبني والأزرق الهادئ"
+customization:
+  en: Embroidered with your baby's name
+  ar: مطرّز باسم طفلكم

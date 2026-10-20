@@ -9,8 +9,8 @@ import { normalizeWhatsAppNumber } from './whatsapp.mjs';
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const CURRENCIES = ['EGP', 'SAR', 'AED', 'KWD', 'QAR', 'BHD', 'OMR', 'USD', 'EUR', 'GBP'];
 export const AVAILABILITY = ['made-to-order', 'available', 'unavailable'];
-export const DETAIL_FIELDS = ['materials', 'techniques', 'dimensions', 'colours', 'sizes', 'customization', 'production_time'];
-export const COLLECTION_ICONS = ['rings', 'hoop', 'knot', 'baby', 'brush', 'yarn', 'gift'];
+export const DETAIL_FIELDS = ['materials', 'techniques', 'dimensions', 'colours', 'sizes', 'customization', 'production_time', 'minimum_order'];
+export const COLLECTION_ICONS = ['rings', 'hoop', 'flower', 'knot', 'crescent', 'baby', 'brush', 'yarn', 'gift'];
 // Which part of a photo to keep when it is cropped into a frame.
 export const IMAGE_FOCUS = ['center', 'left', 'right', 'top', 'bottom'];
 const PRODUCT_KEYS = new Set(['id', 'slug', 'collection', 'sample', 'featured', 'name', 'description', 'images', 'price', 'availability', ...DETAIL_FIELDS]);
@@ -84,7 +84,7 @@ function imageRef(root, value, where, report, { required = false } = {}) {
 function loadSettings(root, report) {
   const file = 'content/settings.yml';
   const data = readYaml(root, file, report) ?? {};
-  const settings = { whatsapp: null, siteUrl: '', basePath: '', defaultLanguage: 'ar', brand: {}, social: {}, launch: {} };
+  const settings = { whatsapp: null, siteUrl: '', basePath: '', defaultLanguage: 'ar', featuredCollection: '', brand: {}, social: {}, launch: {} };
 
   const rawNumber = data.whatsapp?.number;
   const normalized = normalizeWhatsAppNumber(rawNumber == null ? '' : String(rawNumber));
@@ -123,6 +123,8 @@ function loadSettings(root, report) {
     settings.social[network] = value.trim();
   }
 
+  settings.featuredCollection = isText(data.homepage?.featured_collection) ? data.homepage.featured_collection.trim() : '';
+
   settings.launch.arabicReviewed = data.launch?.arabic_reviewed === true;
   settings.launch.showSampleProducts = data.launch?.show_sample_products !== false;
   return settings;
@@ -141,7 +143,7 @@ function loadPhotos(root, report) {
       image: withAlt(imageRef(root, item, { file, label: `${key} photo ${i + 1}` }, report), `${key} photo ${i + 1}`),
       caption: bilingual(item?.caption),
     }));
-  return { hero: one('hero'), ghada: one('ghada'), glimpse: list('glimpse'), process: list('process') };
+  return { hero: one('hero'), heroDetail: one('hero_detail'), custom: one('custom'), ghada: one('ghada'), glimpse: list('glimpse'), process: list('process') };
 }
 
 function loadCollections(root, report) {
@@ -303,6 +305,10 @@ export function loadContent(root) {
     ar: readYaml(root, 'content/copy/ar.yml', report) ?? {},
   };
   compareCopy(copy.en, copy.ar, '', report);
+  if (settings.featuredCollection && !collections.some((c) => c.slug === settings.featuredCollection)) {
+    report.warn('content/settings.yml', `homepage → featured_collection "${settings.featuredCollection}" doesn't exist, so no collection is spotlighted.`);
+    settings.featuredCollection = '';
+  }
 
   const products = allProducts.filter((p) => settings.launch.showSampleProducts || !p.sample);
   for (const collection of collections) {

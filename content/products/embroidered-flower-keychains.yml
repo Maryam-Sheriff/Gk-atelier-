@@ -2,8 +2,7 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0015
 slug: embroidered-flower-keychains
-collection: embroidery-textile-art
-featured: true
+collection: embroidery-couture
 name:
   en: Embroidered Flower Keychains
   ar: ميداليات مطرّزة بالزهور

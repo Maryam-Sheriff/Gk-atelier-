@@ -2,8 +2,7 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0001
 slug: macrame-mirror-wall-shelf
-collection: macrame-home-decor
-featured: true
+collection: macrame-decor
 name:
   en: Macramé Mirror with Shelf
   ar: مرآة مكرمية مع رف

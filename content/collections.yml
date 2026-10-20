@@ -8,73 +8,101 @@
 #    name:   the collection name in English and Arabic
 #    short:  one sentence for the collection cards
 #    intro:  a short introduction for the collection's own page
-#    image:  cover photograph (put it in images/collections), and its
-#            description in both languages
+#    image:  cover photograph and its description in both languages (any
+#            photo in images/ can be used, including a product photo)
 #    icon:   the small drawing used while there is no photograph
-#            (rings, hoop, knot, baby, brush, yarn or gift)
-#  The order here is the order on the website.
+#            (rings, hoop, flower, knot, crescent, baby, brush, yarn or gift)
+#  The order here is the order on the website. The collection named in
+#  settings.yml → featured_collection also gets its own band on the homepage.
 # ─────────────────────────────────────────────────────────────────────────────
 
 - slug: wedding-bridal
   icon: rings
   name:
-    en: Wedding & Bridal Creations
+    en: Bridal & Wedding Creations
     ar: إبداعات الزفاف والعروس
   short:
-    en: Handmade keepsakes and finishing touches for the day you will always remember.
-    ar: تفاصيل وتذكارات مصنوعة يدويًا ليومٍ سيبقى في الذاكرة دائمًا.
+    en: Katb el-ketab handkerchiefs, ring trays and bridal details, made for the day you will always remember.
+    ar: مناديل كتب الكتاب وصواني الدبل وتفاصيل العروس، مصنوعة ليوم سيبقى في الذاكرة دائمًا.
   intro:
     en: >-
-      A wedding is made of small, meaningful details. These pieces are made by
-      hand to suit your celebration — created to be used on the day and kept
-      long after it.
+      A wedding is made of small, meaningful details. From katb el-ketab
+      handkerchiefs worked in beads and embroidery to ring trays and bridal
+      accessories, each piece is made by hand to suit your celebration — used
+      on the day, and kept long after it.
     ar: >-
-      يتكوّن يوم الزفاف من تفاصيل صغيرة تحمل الكثير من المعاني. تُصنع هذه القطع
-      يدويًا لتليق باحتفالكم، لتُستخدم في ذلك اليوم وتبقى ذكرى جميلة بعده.
+      يتكوّن يوم الزفاف من تفاصيل صغيرة تحمل الكثير من المعاني. من مناديل كتب
+      الكتاب المشغولة بالخرز والتطريز إلى صواني الدبل وإكسسوارات العروس، تُصنع كل
+      قطعة يدويًا لتليق باحتفالكم، لتُستخدم في ذلك اليوم وتبقى ذكرى جميلة بعده.
   image:
-    src: images/products/hexagonal-ring-tray/1.jpg
+    src: images/products/embellished-lace-hand-fan/1.jpg
     alt:
-      en: Hexagonal black ring tray with gold handles, a sparkling border and a glass ring box
-      ar: صينية دبل سداسية سوداء بمقابض ذهبية وإطار لامع وعلبة زجاجية للدبل
+      en: Ivory lace hand fan scattered with gold and clear embellishments and edged in beads
+      ar: مروحة يد من الدانتيل العاجي تتناثر عليها حبات ذهبية وشفافة وحافتها مزيّنة بالخرز
 
-- slug: embroidery-textile-art
+- slug: embroidery-couture
   icon: hoop
   name:
-    en: Embroidery & Textile Art
-    ar: التطريز وفنون النسيج
+    en: Embroidery & Couture Details
+    ar: التطريز وتفاصيل الأزياء الراقية
   short:
-    en: Patient needlework on fabric — names, motifs and designs stitched by hand.
-    ar: تطريز يدوي بصبرٍ على القماش — أسماء ونقوش وتصاميم بالإبرة والخيط.
+    en: Hand embroidery, beadwork and jewelled embellishment, from personal keepsakes to eveningwear.
+    ar: تطريز يدوي وشغل خرز وتزيين بالأحجار، من التذكارات الشخصية إلى فساتين السهرة.
   intro:
     en: >-
-      Embroidery is slow, careful work: thread chosen colour by colour and
-      stitched one stitch at a time. Each piece carries the quiet texture that
-      only handwork can give.
+      Embroidery is slow, careful work: thread chosen colour by colour, beads
+      and stones set one by one. Drawing on years of work alongside wedding and
+      eveningwear ateliers, this collection brings couture finishing to dresses,
+      keepsakes and personal pieces alike.
     ar: >-
-      التطريز عمل هادئ ودقيق: تُختار الخيوط لونًا لونًا وتُطرَّز غرزةً بعد غرزة.
-      وتحمل كل قطعة ذلك الملمس الخاص الذي لا يمنحه إلا العمل اليدوي.
+      التطريز عمل هادئ ودقيق: تُختار الخيوط لونًا لونًا، وتُثبَّت الخرزات والأحجار
+      واحدة تلو الأخرى. ومن خبرة سنوات من العمل مع أتيليهات فساتين الزفاف والسهرة،
+      تجمع هذه المجموعة لمسة الأزياء الراقية في الفساتين والتذكارات والقطع الشخصية.
   image:
-    src: images/products/personalized-embroidery-hoops/1.jpg
+    src: images/products/jewel-embellished-black-dress/1.jpg
     alt:
-      en: Embroidered hoops with ribbon bows, showing names, flowers and little illustrations stitched by hand
-      ar: طارات مطرّزة بفيونكات من الشريط، عليها أسماء وزهور ورسومات صغيرة مطرّزة يدويًا
+      en: Black high-neck dress on a dress form, scattered with jewelled motifs in coloured stones
+      ar: فستان أسود بياقة عالية على مانيكان، تتناثر عليه تصاميم مزيّنة بأحجار ملوّنة
 
-- slug: macrame-home-decor
+- slug: fabric-flowers-appliques
+  icon: flower
+  name:
+    en: Fabric Flowers & Appliqués
+    ar: الزهور القماشية والأبليكات
+  short:
+    en: Fabric flowers and decorative appliqués shaped by hand, petal by petal.
+    ar: زهور قماشية وأبليكات زخرفية تُشكَّل يدويًا، بتلةً بتلة.
+  intro:
+    en: >-
+      A fabric flower is built petal by petal, each layer shaped to catch the
+      light. These handmade flowers and appliqués add a finishing detail to
+      dresses, accessories, gifts and décor.
+    ar: >-
+      تُبنى الزهرة القماشية بتلةً بتلة، وتُشكَّل كل طبقة منها لتلتقط الضوء. تضيف
+      هذه الزهور والأبليكات المصنوعة يدويًا لمسة أخيرة إلى الفساتين والإكسسوارات
+      والهدايا والديكور.
+  image:
+    src: images/products/handmade-fabric-flowers/1.jpg
+    alt:
+      en: Three layered fabric flowers in ivory, glittering red and glittering navy
+      ar: ثلاث زهور قماشية متعددة الطبقات بالعاجي والأحمر اللامع والكحلي اللامع
+
+- slug: macrame-decor
   icon: knot
   name:
-    en: Macramé & Home Décor
-    ar: المكرمية وديكور المنزل
+    en: Macramé & Decorative Art
+    ar: المكرمية والفنون الزخرفية
   short:
-    en: Hand-knotted macramé and decorative pieces that bring warmth to a home.
-    ar: مكرمية معقودة يدويًا وقطع ديكور تضيف دفئًا إلى المنزل.
+    en: Hand-knotted macramé and decorative pieces that bring texture and warmth to a home.
+    ar: مكرمية معقودة يدويًا وقطع زخرفية تضيف ملمسًا ودفئًا إلى المنزل.
   intro:
     en: >-
       Knotted by hand from soft cord, macramé brings natural texture and calm
-      to a room. Alongside it you will find decorative pieces made to give a
-      home a personal, handmade touch.
+      to a room — from mirrors and shelves to doorway curtains and hallway
+      pieces.
     ar: >-
-      تُعقد المكرمية يدويًا من الحبال الناعمة، فتمنح المكان ملمسًا طبيعيًا وهدوءًا.
-      وإلى جانبها قطع ديكور تضيف إلى البيت لمسة شخصية مصنوعة باليد.
+      تُعقد المكرمية يدويًا من الحبال الناعمة، فتمنح المكان ملمسًا طبيعيًا وهدوءًا
+      — من المرايا والرفوف إلى ستائر المداخل وقطع الممرات.
   image:
     src: images/products/macrame-doorway-curtain/1.jpg
     focus: left
@@ -82,46 +110,71 @@
       en: Ivory macramé curtain with diamond patterns hanging in a sunlit doorway
       ar: ستارة مكرمية عاجية بنقوش معيّنة معلّقة عند مدخل مشمس
 
+- slug: ramadan
+  icon: crescent
+  name:
+    en: Ramadan Collection
+    ar: مجموعة رمضان
+  short:
+    en: Macramé lanterns, crescents and garlands to bring the warmth of Ramadan home.
+    ar: فوانيس وأهلّة وزينة من المكرمية تملأ البيت بدفء رمضان.
+  intro:
+    en: >-
+      Lanterns, crescents and stars knotted by hand in soft ivory cord — a
+      collection of macramé pieces to dress the home for the holy month, made
+      to be brought out and treasured year after year.
+    ar: >-
+      فوانيس وأهلّة ونجوم معقودة يدويًا من الحبال العاجية الناعمة — مجموعة من قطع
+      المكرمية تزيّن البيت في الشهر الكريم، وتُحفظ لتعود معكم عامًا بعد عام.
+  image:
+    src: images/products/macrame-ramadan-garland/1.jpg
+    alt:
+      en: Macramé Ramadan garland of crescents, stars and lanterns with warm fairy lights across a hallway
+      ar: زينة رمضان من المكرمية بأهلّة ونجوم وفوانيس وأضواء دافئة على امتداد ممر
+
 - slug: baby-newborn
   icon: baby
   name:
     en: Baby Sets & Newborn Gifts
     ar: أطقم وهدايا المواليد
   short:
-    en: Gentle handmade sets and gifts to welcome a new little one.
-    ar: أطقم وهدايا رقيقة مصنوعة يدويًا لاستقبال المولود الجديد.
+    en: Gentle handmade sets and gifts, embroidered with love to welcome a new little one.
+    ar: أطقم وهدايا رقيقة مصنوعة يدويًا ومطرّزة بحب لاستقبال المولود الجديد.
   intro:
     en: >-
       Few moments are as tender as welcoming a new baby. These handmade sets
-      and gifts are made with softness and care — for new parents, and for
-      the people celebrating with them.
+      and gifts are embroidered with the baby's name and made with softness and
+      care — for new parents, and for the people celebrating with them.
     ar: >-
-      قليلة هي اللحظات الرقيقة مثل استقبال مولود جديد. تُصنع هذه الأطقم والهدايا
-      يدويًا بنعومة وعناية — للوالدين الجديدين، ولكل من يشاركهم الفرحة.
+      قليلة هي اللحظات الرقيقة مثل استقبال مولود جديد. تُطرَّز هذه الأطقم والهدايا
+      باسم الطفل وتُصنع يدويًا بنعومة وعناية — للوالدين الجديدين، ولكل من يشاركهم
+      الفرحة.
   image:
     src: images/products/lace-butterfly-newborn-set/1.jpg
     alt:
       en: Ivory newborn set with lace, a baby's name in red Arabic calligraphy, pink roses and gold butterflies
       ar: طقم مواليد عاجي بالدانتيل، عليه اسم الطفل بخط عربي أحمر وورود وردية وفراشات ذهبية
 
-- slug: silk-painting
+- slug: paintings
   icon: brush
   name:
-    en: Silk Painting
-    ar: الرسم على الحرير
+    en: Paintings
+    ar: لوحات فنية
   short:
-    en: Colour painted by hand onto silk — every piece one of a kind.
-    ar: ألوان تُرسم يدويًا على الحرير — فلا تتشابه قطعتان.
+    en: Paintings made by hand, from soft washes of colour to rich, textured gold.
+    ar: لوحات مرسومة يدويًا، من درجات لونية ناعمة إلى ملامس ذهبية غنية.
   intro:
     en: >-
-      Painting on silk is a delicate art: colours flow into the fabric and
-      settle in their own way, so no two pieces are ever quite the same.
+      Each painting is made by hand, layer upon layer of colour and texture,
+      so no two are ever quite the same.
     ar: >-
-      الرسم على الحرير فنّ رقيق: تنساب الألوان في القماش وتستقر بطريقتها الخاصة،
-      لذلك لا تتشابه قطعتان أبدًا.
+      تُرسم كل لوحة يدويًا، طبقةً فوق طبقة من الألوان والملامس، لذلك لا تتشابه
+      لوحتان أبدًا.
   image:
-    src: ""
-    alt: { en: "", ar: "" }
+    src: images/products/abstract-gold-textured-painting/1.jpg
+    alt:
+      en: Abstract painting with a textured gold band between beige and black, in a gold frame
+      ar: لوحة تجريدية بشريط ذهبي بارز بين البيج والأسود، بإطار ذهبي
 
 - slug: crochet-teriko
   icon: yarn
@@ -149,19 +202,21 @@
 - slug: personalized-gifts
   icon: gift
   name:
-    en: Personalized Gifts
-    ar: هدايا مخصّصة
+    en: Personalized Gifts & Custom Projects
+    ar: هدايا مخصّصة ومشاريع حسب الطلب
   short:
-    en: Thoughtful gifts made around a name, a date or a moment worth remembering.
-    ar: هدايا مدروسة تُصنع حول اسم أو تاريخ أو لحظة تستحق أن تُذكر.
+    en: Gifts made around a name, a date or a moment, and custom projects in the quantities you need.
+    ar: هدايا تُصنع حول اسم أو تاريخ أو لحظة، ومشاريع حسب الطلب بالكميات التي تحتاجونها.
   intro:
     en: >-
-      The most meaningful gifts are the ones made for one person. Talk to
-      Ghada about a name, a date or a detail that matters, and the piece can
-      be made around it.
+      The most meaningful gifts are the ones made for one person — and some
+      projects need many pieces made with the same care. Talk to Ghada about a
+      name, a date, wedding favours or a larger order, and the work can be
+      shaped around it.
     ar: >-
-      أجمل الهدايا هي تلك التي تُصنع لشخص واحد بعينه. حدّثوا غادة عن اسم أو تاريخ
-      أو تفصيلة تعني لكم الكثير، لتُصنع القطعة من حولها.
+      أجمل الهدايا هي تلك التي تُصنع لشخص واحد بعينه — وبعض المشاريع تحتاج إلى
+      قطع كثيرة تُصنع بالعناية نفسها. حدّثوا غادة عن اسم أو تاريخ أو توزيعات
+      لمناسبتكم أو طلب بكميات أكبر، لتُصنع القطع من حوله.
   image:
     src: images/products/macrame-keychain-wedding-favours/1.jpg
     alt:

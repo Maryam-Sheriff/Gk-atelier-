@@ -2,7 +2,7 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0011
 slug: macrame-ramadan-lanterns
-collection: macrame-home-decor
+collection: ramadan
 name:
   en: Macramé Ramadan Lanterns
   ar: فوانيس رمضان من المكرمية

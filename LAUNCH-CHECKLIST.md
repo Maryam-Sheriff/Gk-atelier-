@@ -1,8 +1,8 @@
 # Launch checklist
 
 The website is complete and working, but it ships as a **preview**. It
-contains no invented contact details, products, prices or biography, so a few
-real things from Ghada are needed before it goes public.
+contains no invented contact details, products, prices or biography: the
+number, biography and positioning come from Ghada's own brief.
 
 While anything in the first section is missing, the site shows a slim
 "Preview" bar, tells search engines not to index it, and
@@ -11,17 +11,19 @@ at any time.
 
 ## Required before launch (the site checks these itself)
 
-- [ ] **WhatsApp number:** `content/settings.yml` → `whatsapp.number`.
-      Then test it: on a phone *and* on a computer, open a product page, press
-      **Order This via WhatsApp**, and check that the chat opens with Ghada and
-      the message names the product and links back to it.
+- [x] **WhatsApp number:** +20 10 6711 2862 (`whatsapp.number` in
+      `content/settings.yml`). Test it once live: on a phone *and* on a
+      computer, open a product page, press **Enquire on WhatsApp**, and check
+      that the chat opens with Ghada and the message names the product and
+      links back to it. Do the same with the project form, once as an
+      individual and once as a business.
 - [x] **Website address:** the site is published on GitHub Pages at
       https://maryam-sheriff.github.io/Gk-atelier-/ (`site.url` in
       `content/settings.yml`). If a domain is bought later, see README.md →
       Custom domain.
 - [x] **Logo:** added (`images/brand/`), with the header monogram, homepage
       and footer versions, browser icon and sharing image cut from it.
-- [x] **Real products:** twenty-eight pieces are on the site and the sample
+- [x] **Real products:** twenty-eight pieces in nine collections are on the site and the sample
       listings are switched off. Keep adding pieces (see EDITING-GUIDE.md), and
       add prices, sizes and timings to each piece once Ghada confirms them.
 - [ ] **Arabic review:** a fluent Arabic speaker, ideally someone familiar with
@@ -38,25 +40,22 @@ at any time.
       customers are happy for their pieces to appear on the website, or
       replace those photos with ones showing sample names.
 - [ ] **Product names and collections:** each piece is named and described
-      from its photo only. Ghada should check the names, especially the
-      katb el-ketab cushions and ring trays, and the collection each piece
-      sits in. The abstract gold painting is under Macramé & Home Décor
-      because it isn't silk painting, and the jewelled black dress and the
-      fabric flowers are under Embroidery & Textile Art.
+      from its photo only. Ghada should check the names (the katb el-ketab
+      pieces are now called handkerchiefs — مناديل كتب الكتاب — and the
+      bodysuit is part of a baby set) and the collection each piece sits in.
+      The jewelled black dress is under Embroidery & Couture Details.
 - [ ] **Bridal gown photo:** unlike the others, it carries no GK Atelier
       logo. Confirm that it shows Ghada's own work (or say which part of it
       is hers, such as the embroidery) before launch.
-- [ ] **"You're welcome to ask about"** (`custom_options` in both copy files)
-      lists personalized pieces, custom colours, names, embroidery, gift sets
-      and designs for special occasions, as in the brief. Remove anything Ghada
-      doesn't want to offer.
-- [ ] **About page wording:** the text describes the atelier and handmade work
-      in general terms and invents nothing about Ghada's life or experience.
-      Ghada should be happy with it. Her own words can be added under
-      `about.story`.
-- [ ] **Privacy notice:** it says messages are used only to reply to
-      enquiries and arrange orders, and that Ghada will delete a customer's
-      messages on request. Ghada must be comfortable committing to that. Update
+- [ ] **What the atelier offers:** "Made for your vision" (`home.vision_items`)
+      and the two audiences on the Custom Projects page (`custom.audiences`)
+      follow the brief. Remove anything Ghada doesn't want to offer.
+- [ ] **About page:** the biography is Ghada's own text from the brief, shown
+      as supplied. The four highlights and the list of crafts are drawn from
+      it. Ghada should be happy with both.
+- [ ] **Privacy notice:** it says enquiries are reviewed by Ghada or her team,
+      used only to reply and arrange orders, that customer photos are never
+      published without permission, and that messages are deleted on request. Ghada must be comfortable committing to that. Update
       `privacy.updated_on` if the text changes.
 - [ ] **Where we work:** the Contact page says the atelier is based in Egypt
       and serves Egypt and the Gulf, with delivery arranged per order. Adjust
@@ -64,13 +63,14 @@ at any time.
 
 ## Strongly recommended
 
-- [ ] Pieces and a cover photo for Silk Painting (it shows "New pieces are
-      on their way" until then), Ghada's portrait and three process photos.
-      Until then, tidy "Photograph coming soon" panels are shown.
-- [ ] Optional: a homepage photo (`content/photos.yml` → `hero`; the logo
-      leads the homepage until then), and close-ups of stitching, knots and
-      tools for the "glimpse" gallery, which currently uses six product
-      photos.
+- [ ] A portrait of Ghada (`content/photos.yml` → `ghada`), ideally at
+      work, and photos of the workspace, materials and the artisan team
+      (`process`). Until then the homepage shows Ghada's quote instead of a
+      portrait, and the About page opens with her work.
+- [ ] Optional: close-ups of stitching, knots and tools for the "glimpse"
+      gallery, which currently uses six product photos.
+- [ ] Before Ramadan ends, change or empty `homepage.featured_collection` in
+      `content/settings.yml` to spotlight another collection.
 - [ ] Instagram (and any other) account links in `content/settings.yml`.
 - [ ] Optional: an SVG version of the logo from the designer, for an even
       sharper header monogram.

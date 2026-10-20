@@ -61,7 +61,7 @@ ${askBand(ctx, {
   body: t('collections.band_text'),
   message: t('whatsapp.messages.general'),
   label: t('whatsapp.ask'),
-  secondary: button(ctx.url('/custom-orders/'), t('home.custom_link'), { variant: 'secondary' }),
+  secondary: button(ctx.url('/custom-orders/'), t('home.vision_button'), { variant: 'secondary' }),
 })}`;
 
   return {
@@ -131,7 +131,7 @@ export function collectionPage(ctx, collection) {
           <p>${t('collection.empty_text')}</p>
           <div class="empty-state__actions">
             ${whatsappButton(ctx, message, { label: t('whatsapp.ask_collection') })}
-            ${button(customHref, t('home.custom_link'), { variant: 'secondary' })}
+            ${button(customHref, t('home.vision_button'), { variant: 'secondary' })}
           </div>
         </div>`}
   </div>
@@ -143,7 +143,7 @@ ${products.length
       body: t('collection.ask_text'),
       message,
       label: t('whatsapp.ask_collection'),
-      secondary: button(customHref, t('home.custom_link'), { variant: 'secondary' }),
+      secondary: button(customHref, t('home.vision_button'), { variant: 'secondary' }),
     })
   : ''}
 
@@ -163,6 +163,7 @@ ${products.length
     name: 'collection',
     route,
     section: 'collections',
+    navKey: `collection:${collection.slug}`,
     title: `${t('collection.title', { collection: name })} | ${t('meta.title_suffix')}`,
     description: t('collection.description', { intro: pick(collection.intro, ctx.lang) || pick(collection.short, ctx.lang) }),
     shareImage,

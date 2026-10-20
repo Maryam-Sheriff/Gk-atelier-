@@ -4,8 +4,8 @@ import { expect, test } from '@playwright/test';
 const KEY_PAGES = [
   '/',
   '/collections/',
-  '/collections/embroidery-textile-art/',
-  '/collections/silk-painting/',
+  '/collections/embroidery-couture/',
+  '/collections/paintings/',
   '/products/test-embroidered-hoop/',
   '/products/test-from-price/',
   '/about/',
@@ -70,7 +70,8 @@ test('buttons and links are large enough to tap', async ({ page, isMobile }) => 
   for (const path of ['/', '/en/', '/en/products/test-embroidered-hoop/', '/en/custom-orders/', '/contact/']) {
     await page.goto(path);
     const small = await page.evaluate(() =>
-      [...document.querySelectorAll('.btn, .nav-toggle, .lang-switch, .pill, .gallery__thumb, input, select, textarea')]
+      // Radio buttons are tapped through their whole label (.choice).
+      [...document.querySelectorAll('.btn, .nav-toggle, .lang-switch, .pill, .gallery__thumb, .choice, input:not([type="radio"]), select, textarea')]
         .filter((el) => el.offsetParent !== null)
         .map((el) => ({ el: el.className || el.tagName, rect: el.getBoundingClientRect() }))
         .filter(({ rect }) => rect.height < 40 || rect.width < 40)

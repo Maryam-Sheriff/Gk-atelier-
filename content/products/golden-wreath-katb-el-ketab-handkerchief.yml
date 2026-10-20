@@ -1,0 +1,29 @@
+# Only what the photo shows is written here. Ghada can add confirmed details
+# (price, size, production time, availability) using the fields in _TEMPLATE.yml.
+id: GK-0021
+slug: golden-wreath-katb-el-ketab-handkerchief
+collection: wedding-bridal
+name:
+  en: Golden Wreath Katb El-Ketab Handkerchief
+  ar: منديل كتب كتاب بإكليل ذهبي
+description:
+  en: >-
+    A lace-edged katb el-ketab handkerchief for the marriage-contract
+    ceremony, with names in flowing Arabic calligraphy at its centre, framed
+    by a wreath of golden leaves and flowers. Everything is worked in gold
+    beads, with a pearl bead at the heart of each flower.
+  ar: >-
+    منديل كتب كتاب لحفل عقد القران بإطار من الدانتيل، تتوسطه أسماء بالخط العربي
+    الانسيابي داخل إكليل من الأوراق والزهور الذهبية. وكل ذلك مشغول بالخرز الذهبي،
+    مع حبة لؤلؤ في قلب كل زهرة.
+images:
+  - src: images/products/golden-wreath-katb-el-ketab-handkerchief/1.jpg
+    alt:
+      en: Ivory katb el-ketab handkerchief edged in lace, with names in gold beaded Arabic calligraphy inside a wreath of golden beaded leaves and flowers with pearl centres
+      ar: منديل كتب كتاب عاجي بإطار من الدانتيل، عليه أسماء بالخط العربي مشغولة بالخرز الذهبي داخل إكليل من الأوراق والزهور الذهبية بقلوب من اللؤلؤ
+techniques:
+  en: Hand beadwork
+  ar: شغل خرز يدوي
+customization:
+  en: Worked with the couple's names
+  ar: مشغول باسمَي العروسين

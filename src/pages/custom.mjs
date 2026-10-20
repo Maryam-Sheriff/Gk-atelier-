@@ -3,10 +3,10 @@ import { decorativeNumber, pick } from '../lib/i18n.mjs';
 import { icon } from '../components/icons.mjs';
 import { breadcrumbs, whatsappNote } from '../components/ui.mjs';
 
-function field(ctx, { id, label, required, hint, control }) {
+function field(ctx, { id, label, required, hint, control, className = '' }) {
   const { t } = ctx;
   const describedBy = [hint && `${id}-hint`, `${id}-error`].filter(Boolean).join(' ');
-  return html`<div class="field" data-field="${id}">
+  return html`<div class="field${className ? ` ${className}` : ''}" data-field="${id}">
     <label class="field__label" for="f-${id}">${label}${required
       ? html`<span class="field__required" aria-hidden="true"> *</span>`
       : html` <span class="field__optional">(${t('custom.form.optional')})</span>`}</label>
@@ -28,18 +28,16 @@ export function customPage(ctx) {
   const f = (key) => t(`custom.form.${key}`);
   const typeOptions = [
     ...content.collections.map((c) => ({ value: c.slug, label: pick(c.name, ctx.lang) })),
-    { value: 'unsure', label: f('type_unsure') },
+    { value: 'other', label: f('type_other') },
   ];
-  const occasionOptions = f('occasions').map((label) => ({ value: label, label }));
   const action = settings.whatsapp ? `https://wa.me/${settings.whatsapp}` : '#whatsapp-setup';
 
-  // Everything the browser needs to turn the form into a WhatsApp message.
+  // Everything the browser needs to turn the form into a WhatsApp message:
+  // one template for individuals and one for professional orders.
   const config = {
     number: settings.whatsapp,
     lang: ctx.lang,
-    intro: t('whatsapp.messages.custom_intro'),
-    outro: t('whatsapp.messages.custom_outro'),
-    labels: t('custom.form.labels'),
+    templates: t('whatsapp.messages.enquiry'),
     errors: t('custom.form.errors'),
   };
 
@@ -47,7 +45,7 @@ export function customPage(ctx) {
 <section class="page-hero page-hero--custom">
   <div class="container">
     ${breadcrumbs(ctx, [{ href: ctx.url('/'), label: t('nav.home') }, { label: t('nav.custom') }])}
-    <div class="page-hero__text">
+    <div class="page-hero__text page-hero__text--wide">
       <p class="eyebrow">${t('custom.eyebrow')}</p>
       <h1 class="page-title">${t('custom.heading')}</h1>
       <p class="lead">${t('custom.lead')}</p>
@@ -55,7 +53,23 @@ export function customPage(ctx) {
   </div>
 </section>
 
-<section class="section section--flush-top">
+<section class="section section--linen section--tight" aria-label="${t('custom.audiences_label')}">
+  <div class="container">
+    <div class="audiences">
+      ${t('custom.audiences').map(
+        (a) => html`<div class="audience">
+          <p class="eyebrow">${a.eyebrow}</p>
+          <h2 class="audience__title">${a.title}</h2>
+          <p class="audience__text">${a.text}</p>
+          <ul class="stitch-list">${a.items.map((item) => html`<li>${item}</li>`)}</ul>
+        </div>`,
+      )}
+    </div>
+    <p class="audiences__note">${icon('info')}<span>${t('custom.assessed_note')}</span></p>
+  </div>
+</section>
+
+<section class="section">
   <div class="container custom-layout">
 
     <div class="enquiry">
@@ -68,26 +82,43 @@ export function customPage(ctx) {
           <ul data-error-list></ul>
         </div>
 
-        ${field(ctx, {
-          id: 'name',
-          label: f('name'),
-          required: true,
-          control: (d) => html`<input${attrs({ id: 'f-name', name: 'name', type: 'text', autocomplete: 'name', required: true, maxlength: 80, 'aria-describedby': d })}>`,
-        })}
+        <fieldset class="field field--choice" data-field="customer" aria-describedby="customer-error">
+          <legend class="field__label">${f('customer')}<span class="field__required" aria-hidden="true"> *</span></legend>
+          <div class="choice-row">
+            <label class="choice"><input type="radio" name="customer" value="individual" id="f-customer" required><span>${f('customer_individual')}</span></label>
+            <label class="choice"><input type="radio" name="customer" value="business" required><span>${f('customer_business')}</span></label>
+          </div>
+          <p class="field__error" id="customer-error" data-error-for="customer" hidden></p>
+        </fieldset>
+
         <div class="field-row">
           ${field(ctx, {
-            id: 'occasion',
-            label: f('occasion'),
+            id: 'name',
+            label: f('name'),
             required: true,
-            control: (d) => select('occasion', 'occasion', true, d, f('occasion_placeholder'), occasionOptions),
+            control: (d) => html`<input${attrs({ id: 'f-name', name: 'name', type: 'text', autocomplete: 'name', required: true, maxlength: 80, 'aria-describedby': d })}>`,
           })}
           ${field(ctx, {
-            id: 'type',
-            label: f('type'),
+            id: 'contact',
+            label: f('contact'),
             required: true,
-            control: (d) => select('type', 'type', true, d, f('type_placeholder'), typeOptions),
+            hint: f('contact_hint'),
+            control: (d) => html`<input${attrs({ id: 'f-contact', name: 'contact', type: 'text', autocomplete: 'tel', required: true, maxlength: 120, 'aria-describedby': d })}>`,
           })}
         </div>
+        ${field(ctx, {
+          id: 'business',
+          label: f('business'),
+          hint: f('business_hint'),
+          className: 'field--business',
+          control: (d) => html`<input${attrs({ id: 'f-business', name: 'business', type: 'text', autocomplete: 'organization', maxlength: 120, 'aria-describedby': d })}>`,
+        })}
+        ${field(ctx, {
+          id: 'type',
+          label: f('type'),
+          required: true,
+          control: (d) => select('type', 'type', true, d, f('type_placeholder'), typeOptions),
+        })}
         ${field(ctx, {
           id: 'description',
           label: f('description'),
@@ -95,18 +126,34 @@ export function customPage(ctx) {
           hint: f('description_hint'),
           control: (d) => html`<textarea${attrs({ id: 'f-description', name: 'description', rows: 5, required: true, minlength: 10, maxlength: 1500, 'aria-describedby': d })}></textarea>`,
         })}
+        <div class="field-row">
+          ${field(ctx, {
+            id: 'quantity',
+            label: f('quantity'),
+            hint: f('quantity_hint'),
+            control: (d) => html`<input${attrs({ id: 'f-quantity', name: 'quantity', type: 'text', inputmode: 'text', maxlength: 60, 'aria-describedby': d })}>`,
+          })}
+          ${field(ctx, {
+            id: 'date',
+            label: f('date'),
+            hint: f('date_hint'),
+            control: (d) => html`<input${attrs({ id: 'f-date', name: 'date', type: 'date', 'aria-describedby': d })}>`,
+          })}
+        </div>
         ${field(ctx, {
-          id: 'personalization',
-          label: f('personalization'),
-          hint: f('personalization_hint'),
-          control: (d) => html`<textarea${attrs({ id: 'f-personalization', name: 'personalization', rows: 2, maxlength: 500, 'aria-describedby': d })}></textarea>`,
+          id: 'details',
+          label: f('details'),
+          hint: f('details_hint'),
+          control: (d) => html`<textarea${attrs({ id: 'f-details', name: 'details', rows: 3, maxlength: 800, 'aria-describedby': d })}></textarea>`,
         })}
-        ${field(ctx, {
-          id: 'date',
-          label: f('date'),
-          hint: f('date_hint'),
-          control: (d) => html`<input${attrs({ id: 'f-date', name: 'date', type: 'date', 'aria-describedby': d })}>`,
-        })}
+
+        <div class="reference-note">
+          <span class="reference-note__icon" aria-hidden="true">${icon('photo')}</span>
+          <div>
+            <h3 class="reference-note__title">${f('reference_title')}</h3>
+            <p>${f('reference_text')}</p>
+          </div>
+        </div>
 
         <p class="form-privacy">${icon('lock')}<span>${f('privacy')} <a href="${ctx.url('/privacy/')}">${f('privacy_link')}</a></span></p>
         <button class="btn btn--primary btn--block btn--large" type="submit">${icon('whatsapp')}<span>${f('submit')}</span></button>
@@ -130,12 +177,6 @@ export function customPage(ctx) {
 
     <div class="custom-aside">
       <div class="custom-aside__block">
-        <h2 class="custom-aside__title">${t('custom.options_title')}</h2>
-        <ul class="option-list option-list--compact">
-          ${t('custom_options').map((option) => html`<li>${option}</li>`)}
-        </ul>
-      </div>
-      <div class="custom-aside__block">
         <h2 class="custom-aside__title">${t('custom.how_title')}</h2>
         <ol class="mini-steps">
           ${t('custom.how').map(
@@ -147,9 +188,9 @@ export function customPage(ctx) {
         <h2 class="notice__title">${icon('info')}<span>${t('custom.enquiry_notice_title')}</span></h2>
         <p>${t('custom.enquiry_notice')}</p>
       </div>
-      <div class="custom-aside__block">
-        <h2 class="custom-aside__title">${icon('photo')}<span>${f('reference_title')}</span></h2>
-        <p>${f('reference_text')}</p>
+      <div class="custom-aside__block custom-aside__block--experience">
+        <h2 class="custom-aside__title">${t('custom.experience_title')}</h2>
+        <p>${t('custom.experience_text')}</p>
       </div>
     </div>
   </div>

@@ -31,10 +31,10 @@ Requires Node 20.9+. The output is a plain static site in `dist/`.
 | --- | --- |
 | Home | `/` · `/en/` |
 | Collections | `/collections/` · `/en/collections/` |
-| Collection (×7) | `/collections/wedding-bridal/` … |
+| Collection (×9) | `/collections/wedding-bridal/` … |
 | Product (one per file in `content/products/`) | `/products/<slug>/` |
 | About Ghada | `/about/` |
-| Custom orders (enquiry form → WhatsApp) | `/custom-orders/` |
+| Custom projects & professional orders (form → WhatsApp) | `/custom-orders/` |
 | Contact | `/contact/` |
 | Privacy notice | `/privacy/` |
 | Not found (both languages) | `/404.html` |
@@ -52,13 +52,15 @@ of every page, including on phones.
 - One number in `content/settings.yml` drives every button
   (`https://wa.me/<number>?text=<encoded message>`). The build validates the
   format and explains mistakes (local `0…` format, `200…` for Egypt, and so on).
-- **Product pages:** "Order This via WhatsApp" prefills the product name and
-  its full page link. On phones, a slim order bar appears once the main button
-  scrolls away.
+- **Product pages:** "Enquire on WhatsApp" prefills the product name and its
+  full page link. On phones, a slim bar appears once the main button scrolls
+  away.
 - **Collections:** "Ask about this collection" names the collection.
-- **Custom orders:** the form validates in the visitor's language, then opens
-  WhatsApp with the enquiry written out and shows a confirmation with the exact
-  message and a fallback link. It says plainly that this is an enquiry, not an
+- **Custom projects and professional orders:** the form asks whether the
+  visitor is an individual or a business, then validates in the visitor's
+  language and opens WhatsApp with one of two messages written out (a custom
+  project, or a professional order with the business name, quantity and
+  date). A confirmation shows the exact message and a fallback link. It says plainly that this is an enquiry, not an
   order. Nothing is sent or stored by the website, and reference photos are
   attached in WhatsApp, never uploaded here.
 - Links open in a new tab, so visitors keep their place, and nothing is ever
@@ -84,30 +86,34 @@ Once complete, the same build produces the indexable site with `sitemap.xml`
 
 The brief asks for nothing to be invented, so the site ships with:
 
-- **The supplied logo, untouched.** The header uses the GK monogram and the
-  homepage and footer use the monogram and name; both are straight crops of
-  the supplied transparent PNG, never redrawn or stretched. Until a hero
-  photograph is added, the logo leads the homepage. The browser icon and the
-  link-preview image are made from the same file.
-- **No invented photographs.** Clearly labelled "Photograph coming soon"
-  panels (a linen-weave pattern with a line drawing of the craft) fill the
-  photo slots that are still empty (Ghada's portrait, the About page and the
-  Silk Painting cover). They are intentionally graphic and can't be mistaken
-  for products.
+- **The supplied logo, untouched.** The header uses the monogram and name on
+  larger screens and the GK monogram on phones; both are straight crops of
+  the supplied transparent PNG, never redrawn or stretched. The browser icon
+  and the link-preview image are made from the same file.
+- **Ghada's own story.** The biography, the four highlights (over 30 years of
+  art teaching, work with designers and wedding and eveningwear ateliers,
+  knowledge of fabrics and embellishment, a supervised artisan team), the
+  WhatsApp number and the positioning all come from Ghada's brief. No awards,
+  clients or collaborations are named.
+- **No invented photographs.** Until there is a portrait of Ghada, the
+  homepage shows her words on a linen panel and the About page opens with her
+  work. Any empty photo slot shows a clearly labelled "Photograph coming
+  soon" panel that can't be mistaken for a product.
 - **Real pieces described only from their photographs.** Twenty-eight of
-  Ghada's pieces across six collections (katb el-ketab cushions, ring trays and
-  bridal pieces; macramé home and Ramadan décor; embroidery and embellished
-  textiles; crochet; newborn sets; personalized gifts) use her photos, re-saved without their
-  metadata, with names, descriptions and alt text in both languages. The same photos fill
-  the homepage gallery and the collection covers. The pieces carry no
-  prices, sizes, materials, timings or availability until Ghada confirms
-  them, so each product page invites an enquiry instead.
+  Ghada's pieces across nine collections (bridal and wedding creations,
+  embroidery and couture details, fabric flowers and appliqués, macramé, the
+  Ramadan collection, baby sets, paintings, crochet, personalized gifts) use
+  her photos, re-saved without their metadata, with names, descriptions and
+  alt text in both languages. The pieces carry no prices, sizes, materials,
+  timings or availability until Ghada confirms them, so each product page
+  invites an enquiry instead.
 - **Sample listings switched off.** The eight `sample-*` files that
   demonstrated the product page before real pieces existed are disabled with
   `show_sample_products: false`. If switched back on, they are labelled
   "Sample listing", excluded from search and structured data, and block a
   release build.
-- **No biography, testimonials, address, opening hours or phone numbers.**
+- **No testimonials, address or opening hours.** The only phone number is
+  Ghada's WhatsApp number.
 - **Structured data only where accurate:** `Organization` (with logo,
   social links and WhatsApp only once supplied), `BreadcrumbList`, and
   `Product` + `Offer` only for real pieces with an exact price (never for
@@ -192,6 +198,12 @@ tests/e2e/              Playwright — customer journeys, axe accessibility, ove
 
 The brand gold and taupe are too light for small text on ivory, so darker
 shades of the same hues are used where text must stay readable (WCAG AA).
+
+The look borrows from the atelier itself: a woven-linen texture on the page
+and on beige sections (generated in CSS, no image files), running-stitch
+seams between sections, lace-trimmed edges on the dark bands and footer,
+arched frames like atelier windows, and stitched frames on photos. Headings
+use Cormorant Garamond (Amiri in Arabic) with gold italic accents.
 
 ## Testing
 

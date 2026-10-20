@@ -2,7 +2,7 @@
 # (price, size, production time, availability) using the fields in _TEMPLATE.yml.
 id: GK-0023
 slug: personalized-embroidery-hoops
-collection: embroidery-textile-art
+collection: embroidery-couture
 name:
   en: Personalized Embroidery Hoops
   ar: طارات تطريز مخصّصة

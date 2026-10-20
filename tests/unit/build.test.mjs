@@ -111,7 +111,7 @@ test('preview: real products use the supplied photographs, described in both lan
   const widths = page.match(/<source type="image\/webp" srcset="([^"]+)"/)[1].split(', ').map((s) => Number(s.split(' ')[1].slice(0, -1)));
   assert.equal(Math.max(...widths), Math.min(width, 2000));
   // A wide photo can keep a chosen side in view.
-  const focused = shipped.products.find((p) => p.images[0].focus);
+  const focused = shipped.products.find((p) => p.images[0].focus !== 'center');
   if (focused) assert.match(read(preview.outDir, `products/${focused.slug}/index.html`), /style="object-position: \d+% \d+%"/);
 
   const home = read(preview.outDir, 'en/index.html');
@@ -151,6 +151,10 @@ test('preview: all internal links and anchors resolve', () => {
 
 test('preview: the release build refuses to run', async () => {
   const root = copySite('release-refused');
+  editYaml(root, 'content/settings.yml', (s) => {
+    s.whatsapp.number = '';
+    s.launch.arabic_reviewed = false;
+  });
   const lines = [];
   await assert.rejects(build({ root, outDir: path.join(root, 'dist'), release: true, log: (l) => lines.push(l) }), /Not ready for release/);
   assert.match(lines.join('\n'), /WhatsApp number/);
@@ -186,7 +190,7 @@ test('configured: product WhatsApp links name the product and link to its page',
   const page = read(configured.outDir, 'en/products/test-embroidered-hoop/index.html');
   const links = attrValues(page, 'href').filter((h) => h.startsWith('https://wa.me/'));
   assert.ok(links.length >= 3);
-  const productLinks = links.filter((h) => new URL(h).searchParams.get('text').includes('Test Hoop'));
+  const productLinks = links.filter((h) => (new URL(h).searchParams.get('text') ?? '').includes('Test Hoop'));
   assert.ok(productLinks.length >= 2, 'main and sticky buttons');
   const text = new URL(productLinks[0]).searchParams.get('text');
   assert.equal(
@@ -194,7 +198,7 @@ test('configured: product WhatsApp links name the product and link to its page',
     `Hello Ghada! I found your GK Atelier website and I'm interested in Test Hoop & "Name". Could you please share the price, availability, customization options, and delivery details? Product link: ${TEST_URL}/en/products/test-embroidered-hoop/`,
   );
   assert.ok(productLinks[0].startsWith(`https://wa.me/${TEST_NUMBER}?text=`));
-  assert.match(page, /target="_blank" rel="noopener" data-wa=""><svg[^>]*>.*?<\/svg><span>Order This via WhatsApp<\/span>/);
+  assert.match(page, /target="_blank" rel="noopener" data-wa=""><svg[^>]*>.*?<\/svg><span>Enquire on WhatsApp<\/span>/);
 
   const ar = read(configured.outDir, 'products/test-embroidered-hoop/index.html');
   const arText = new URL(attrValues(ar, 'href').find((h) => h.includes('wa.me') && decodeURIComponent(h).includes('طارة اختبار'))).searchParams.get('text');
@@ -240,7 +244,7 @@ test('configured: collections without real pieces show a helpful empty state', (
   const page = read(configured.outDir, `en/collections/${EMPTY_COLLECTION}/index.html`);
   assert.match(page, /New pieces are on their way/);
   assert.match(page, new RegExp(`href="/en/custom-orders/\\?type=${EMPTY_COLLECTION}"`));
-  const wa = attrValues(page, 'href').find((h) => h.includes('wa.me') && decodeURIComponent(h).includes('Silk Painting collection'));
+  const wa = attrValues(page, 'href').find((h) => h.includes('wa.me') && decodeURIComponent(h).includes(shipped.collections.find((c) => c.slug === EMPTY_COLLECTION).name.en));
   assert.ok(wa, 'empty state offers a collection enquiry');
 });
 
@@ -249,14 +253,22 @@ test('configured: custom order page carries the enquiry settings', () => {
   const config = JSON.parse(page.match(/<script type="application\/json" id="enquiry-config">(.*?)<\/script>/)[1]);
   assert.equal(config.number, TEST_NUMBER);
   assert.equal(config.lang, 'en');
-  assert.match(config.outro, /enquiry, not a confirmed order/);
+  assert.match(config.templates.individual.intro, /custom project/);
+  assert.match(config.templates.individual.outro, /feasibility, pricing, and production timeline/);
+  assert.match(config.templates.business.intro, /professional order/);
+  assert.match(config.templates.business.outro, /production options, pricing, and lead times/);
   assert.match(page, /action="https:\/\/wa\.me\/201000000000"/);
   assert.ok(!page.includes('type="file"'), 'no uploads: reference photos go through WhatsApp');
 });
 
 test('configured: logo, social links and organisation data use supplied values only', () => {
   const home = read(configured.outDir, 'en/index.html');
-  // Header: the monogram cut from the supplied logo, in proportion.
+  // Header: the monogram and name on larger screens, the monogram alone on
+  // phones — both cut from the supplied logo, in proportion.
+  const wordmark = home.match(/<img class="brand__wordmark" src="(\/img\/gk-atelier-logo-without-tagline-[0-9a-f]+-192\.webp)" width="(\d+)" height="192" alt="GK Atelier by Ghada Khalil">/);
+  assert.ok(wordmark, 'header wordmark');
+  assert.equal(Number(wordmark[2]), Math.round((961 / 825) * 192));
+  assert.ok(fs.existsSync(path.join(configured.outDir, wordmark[1])));
   const mark = home.match(/<img class="brand__logo" src="(\/img\/gk-atelier-monogram-[0-9a-f]+-192\.webp)" width="(\d+)" height="192" alt="GK Atelier by Ghada Khalil">/);
   assert.ok(mark, 'header monogram');
   assert.equal(Number(mark[2]), Math.round((780 / 584) * 192));
@@ -280,8 +292,14 @@ test('configured: a hero photograph replaces the logo-led homepage', () => {
   assert.match(home, /alt="Test hero photo"/);
 });
 
-test('preview: without a hero photograph the logo leads the homepage', () => {
-  const home = read(preview.outDir, 'index.html');
+test('without a hero photograph the logo leads the homepage', async () => {
+  const root = copySite('no-hero');
+  editYaml(root, 'content/photos.yml', (p) => {
+    p.hero = { src: '', alt: { en: '', ar: '' } };
+  });
+  const outDir = path.join(root, 'dist');
+  await build({ root, outDir, log: () => {} });
+  const home = read(outDir, 'index.html');
   assert.match(home, /<section class="hero hero--brand">/);
   assert.match(home, /<div class="hero__logo">\s*<picture>/);
   assert.match(home, /fetchpriority="high"/);
