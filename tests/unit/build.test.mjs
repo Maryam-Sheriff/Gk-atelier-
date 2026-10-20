@@ -80,7 +80,12 @@ test('preview: no WhatsApp link is invented while the number is missing', () => 
 });
 
 test('preview: kept out of search engines, with no banner on the pages', () => {
-  assert.equal(read(preview.outDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+  // Search engines stay out; link previews in chats and posts still work.
+  const robots = read(preview.outDir, 'robots.txt');
+  assert.match(robots, /User-agent: \*\nDisallow: \/\n$/);
+  for (const bot of ['facebookexternalhit', 'WhatsApp', 'Twitterbot', 'TelegramBot']) assert.match(robots, new RegExp(`User-agent: ${bot}\n`));
+  assert.match(robots, /\nAllow: \/\n\nUser-agent: \*/);
+  assert.ok(!/Googlebot|bingbot/i.test(robots));
   assert.ok(!fs.existsSync(path.join(preview.outDir, 'sitemap.xml')));
   for (const file of htmlFiles(preview.outDir)) {
     const page = read(preview.outDir, file);

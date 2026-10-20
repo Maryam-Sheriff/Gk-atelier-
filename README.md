@@ -76,8 +76,10 @@ sample products). Until all of it is in place:
 
 - every build (and `npm run check`) lists the open items in the terminal;
   the pages themselves carry no banner,
-- every page carries `noindex`, `robots.txt` disallows crawling, and no sitemap
-  is produced,
+- every page carries `noindex`, `robots.txt` keeps search engines out, and no
+  sitemap is produced. The robots that only draw link previews (WhatsApp,
+  Instagram and Facebook, X, LinkedIn, Telegram and the like) are let in, so
+  a shared link still shows its title, description and photo,
 - `npm run build:release` exits with the list instead of building.
 
 Once complete, the same build produces the indexable site with `sitemap.xml`

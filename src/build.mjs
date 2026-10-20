@@ -106,6 +106,22 @@ function createContext({ content, lang, assets, media, blockers, indexable, base
   };
 }
 
+// Robots that only fetch a page to show its title, description and image
+// when someone shares a link in a chat or a post. They don't index anything.
+const LINK_PREVIEW_ROBOTS = [
+  'facebookexternalhit',
+  'Facebot',
+  'WhatsApp',
+  'Twitterbot',
+  'LinkedInBot',
+  'TelegramBot',
+  'Slackbot-LinkExpanding',
+  'Discordbot',
+  'SkypeUriPreview',
+];
+
+const PREVIEW_ROBOTS = `${LINK_PREVIEW_ROBOTS.map((bot) => `User-agent: ${bot}`).join('\n')}\nAllow: /\n\nUser-agent: *\nDisallow: /\n`;
+
 function outputFile(outDir, base, url) {
   const relative = url.slice(base.length);
   return path.join(outDir, relative.endsWith('/') ? `${relative}index.html` : relative);
@@ -190,8 +206,10 @@ export async function build({
     fs.writeFileSync(path.join(outDir, 'sitemap.xml'), sitemap(written, settings.siteUrl, settings.defaultLanguage));
     fs.writeFileSync(path.join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${settings.siteUrl}${base}/sitemap.xml\n`);
   } else {
-    // Previews stay out of search engines until everything is ready.
-    fs.writeFileSync(path.join(outDir, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+    // Previews stay out of search engines until everything is ready, but the
+    // apps that draw link previews (WhatsApp, Instagram, Facebook, X, ...)
+    // may still read the pages; several of them obey robots.txt.
+    fs.writeFileSync(path.join(outDir, 'robots.txt'), PREVIEW_ROBOTS);
   }
   fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
 
